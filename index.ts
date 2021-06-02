@@ -1,12 +1,12 @@
 import { map, Stream } from './src/public-api'
 
 
-const stream = new Stream<number>(publisher => {
+const stream = new Stream<number>(observer => {
   const timer = setInterval(() => {
-    publisher.next(Math.random())
+    observer.next(Math.random())
   }, 1000)
 
-  publisher.onUnListen(() => {
+  observer.onUnsubscribe(() => {
     clearInterval(timer)
   })
 })
@@ -18,10 +18,10 @@ const unListen = stream.pipe(map(value => {
   }
 })).pipe(map(value => {
   return JSON.stringify(value)
-})).listen(value => {
+})).subscribe(value => {
   console.log(['value:', i, value])
   i++
   if (i > 5) {
-    unListen.unListen();
+    unListen.unsubscribe();
   }
 })

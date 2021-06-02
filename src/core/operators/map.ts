@@ -2,20 +2,20 @@ import { Operator, Stream } from '../stream';
 
 export function map<T, U>(handle: (value: T) => U): Operator<T, U> {
   return function (prevSteam: Stream<T>) {
-    return new Stream<U>(publisher => {
-      const sub = prevSteam.listen({
+    return new Stream<U>(observer => {
+      const sub = prevSteam.subscribe({
         next(value: T) {
-          publisher.next(handle(value))
+          observer.next(handle(value))
         },
         error(err?: Error) {
-          publisher.error(err);
+          observer.error(err);
         },
         complete() {
-          publisher.complete();
+          observer.complete();
         }
       })
-      publisher.onUnListen(function () {
-        sub.unListen()
+      observer.onUnsubscribe(function () {
+        sub.unsubscribe()
       })
     })
   }

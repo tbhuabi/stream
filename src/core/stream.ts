@@ -1,21 +1,39 @@
-export interface Publisher<T> {
+export interface Observer<T> {
   next(value: T): void;
 
   error(err?: Error): void;
 
   complete(): void;
 
-  onUnListen?(callback: () => void);
+  onUnsubscribe?(callback: () => void);
 }
 
 export interface Operator<T, U> {
-  (prevStream: Stream<T>): Stream<U>;
+  (stream: Stream<T>): Stream<U>;
 }
 
-export type Listener<T> = Partial<Publisher<T>> | ((value: T) => void);
+export interface NextObserver<T> {
+  next: (value: T) => void;
+  error?: (err: any) => void;
+  complete?: () => void;
+}
 
-export interface UnListen {
-  unListen(): void
+export interface ErrorObserver<T> {
+  next?: (value: T) => void;
+  error: (err: any) => void;
+  complete?: () => void;
+}
+
+export interface CompletionObserver<T> {
+  next?: (value: T) => void;
+  error?: (err: any) => void;
+  complete: () => void;
+}
+
+export type PartialObserver<T> = NextObserver<T> | ErrorObserver<T> | CompletionObserver<T>;
+
+export interface Subscription {
+  unsubscribe(): void
 }
 
 export class Stream<T> {
@@ -23,7 +41,7 @@ export class Stream<T> {
 
   private stopFn: () => void;
 
-  constructor(private source: (publisher: Publisher<T>) => void) {
+  constructor(private source: (observer: Observer<T>) => void) {
 
   }
 
@@ -31,7 +49,7 @@ export class Stream<T> {
     return op(this)
   }
 
-  listen(listener: Listener<T>): UnListen {
+  subscribe(observer: PartialObserver<T> | ((value: T) => void)): Subscription {
     const defaultHandlers = {
       error(err?: Error) {
         if (err) {
@@ -42,14 +60,14 @@ export class Stream<T> {
 
       }
     }
-    let handlers = typeof listener === 'function' ? {
+    let handlers = typeof observer === 'function' ? {
       next(value: T) {
-        (listener as Function)(value)
+        (observer as Function)(value)
       },
       ...defaultHandlers
     } : {
       ...defaultHandlers,
-      ...listener,
+      ...observer,
     };
     const self = this;
     this.source({
@@ -57,7 +75,6 @@ export class Stream<T> {
         if (self.isStop) {
           return;
         }
-        console.log(value)
         handlers.next(value)
       },
       error(err: Error) {
@@ -72,7 +89,7 @@ export class Stream<T> {
         }
         handlers.complete()
       },
-      onUnListen(callback: () => void) {
+      onUnsubscribe(callback: () => void) {
         if (self.isStop) {
           return;
         }
@@ -81,7 +98,7 @@ export class Stream<T> {
     })
 
     return {
-      unListen() {
+      unsubscribe() {
         self.isStop = true
         if (typeof self.stopFn === 'function') {
           self.stopFn();
