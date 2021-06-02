@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "useDefineForClassFields": true,
+    "baseUrl": "./",
+    "outDir": "bundles/",
+    "paths": {
+      "@tanbo/stream": [
+        "src/public-api.ts"
+      ],
+      "@tanbo/*": [
+        "src/*"
+      ]
+    },
+  },
+  "include": [
+    "index.ts",
+    "src/",
+    "test/"
+  ]
+}

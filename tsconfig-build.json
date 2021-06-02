@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "noImplicitAny": false,
+    "useDefineForClassFields": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "outDir": "package/bundles/",
+    "paths": {
+      "@tanbo/stream": [
+        "src/public-api.ts"
+      ],
+      "@tanbo/*": [
+        "src/*"
+      ]
+    }
+  },
+  "include": [
+    "src/public-api.ts"
+  ]
+}
