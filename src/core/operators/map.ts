@@ -1,4 +1,5 @@
-import { Operator, Stream } from '../stream';
+import { Stream } from '../stream';
+import { Operator } from '../help'
 
 export function map<T, U>(handle: (value: T) => U): Operator<T, U> {
   return function (prevSteam: Stream<T>) {

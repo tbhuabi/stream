@@ -20,7 +20,7 @@ module.exports = {
     }
   },
   devServer: {
-    host: ip.address(),
+    host: '127.0.0.1',
     contentBase: path.join(__dirname, 'dist'),
     compress: true,
     port: 9027,
