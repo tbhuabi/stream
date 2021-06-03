@@ -1,7 +1,7 @@
 import { NextObserver, Observer, PartialObserver } from './help';
 import { Stream } from './stream';
 
-export function normalizeSubscribe<T>(observer: any, error?: any, complete?: any): Required<NextObserver<T>> {
+function normalizeSubscribe<T>(observer: any, error?: any, complete?: any): Required<NextObserver<T>> {
   const defaultHandlers = {
     error: error || function (err?: Error) {
       if (err) {

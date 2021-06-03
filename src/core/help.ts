@@ -1,4 +1,4 @@
-import { Stream } from '@tanbo/stream';
+import { Stream } from './stream';
 
 export interface Observer<T> {
   next(value: T): void;
