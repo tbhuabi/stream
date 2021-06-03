@@ -1,32 +1,20 @@
 import { map, Stream } from './src/public-api'
 
 
+let i = 0
 const stream = new Stream<number>(observer => {
-  const timer = setInterval(() => {
-    observer.next(Math.random())
-  }, 1000)
-
-  observer.onUnsubscribe(() => {
-    clearInterval(timer)
+  console.log('fdfdas')
+  setTimeout(() => {
+    observer.next(555)
   })
 })
 
-let i = 0
-const unListen = stream.pipe(map(value => {
-  if (value > 0.5) {
-    throw new Error('xxxx')
-  }
-  return {
-    value
-  }
-})).pipe(map(value => {
-  return JSON.stringify(value)
-})).subscribe(value => {
-  console.log(['value:', i, value])
-  i++
-  if (i > 5) {
-    unListen.unsubscribe();
-  }
-}, err => {
-  console.log(err)
+stream.subscribe(value => {
+  console.log(value)
 })
+
+setTimeout(() => {
+  stream.subscribe(value => {
+    console.log(value)
+  })
+}, 1000)
