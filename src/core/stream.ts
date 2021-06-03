@@ -49,33 +49,40 @@ export class Stream<T> {
     return op(this)
   }
 
-  subscribe(observer: PartialObserver<T> | ((value: T) => void)): Subscription {
+  subscribe(observer: PartialObserver<T>): Subscription;
+  subscribe(observer: ((value: T) => void), error?: (err: any) => void, complete?: () => void): Subscription;
+  subscribe(observer: any, error?: any, complete?: any): Subscription {
     const defaultHandlers = {
-      error(err?: Error) {
+      error: error || function (err?: Error) {
         if (err) {
           throw err;
         }
       },
-      complete() {
-
+      complete: complete || function () {
+        //
       }
     }
-    let handlers = typeof observer === 'function' ? {
+    const handlers = typeof observer === 'function' ? {
       next(value: T) {
-        (observer as Function)(value)
+        (observer)(value)
       },
       ...defaultHandlers
     } : {
       ...defaultHandlers,
       ...observer,
     };
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     this.source({
       next(value: T) {
         if (self.isStop) {
           return;
         }
-        handlers.next(value)
+        try {
+          handlers.next(value)
+        } catch (e) {
+          handlers.error(e)
+        }
       },
       error(err: Error) {
         if (self.isStop) {

@@ -13,6 +13,9 @@ const stream = new Stream<number>(observer => {
 
 let i = 0
 const unListen = stream.pipe(map(value => {
+  if (value > 0.5) {
+    throw new Error('xxxx')
+  }
   return {
     value
   }
@@ -24,4 +27,6 @@ const unListen = stream.pipe(map(value => {
   if (i > 5) {
     unListen.unsubscribe();
   }
+}, err => {
+  console.log(err)
 })
