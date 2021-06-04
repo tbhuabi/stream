@@ -1,5 +1,4 @@
-import { NextObserver, Observer, PartialObserver, Publisher } from './help';
-import { Stream } from './stream';
+import { NextObserver, Observer, PartialObserver, Publisher } from '../help';
 
 function normalizeSubscribe<T>(observer: any, error?: any, complete?: any): Required<NextObserver<T>> {
   const defaultHandlers = {

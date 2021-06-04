@@ -1,5 +1,5 @@
 import { PartialObserver, Subscription } from './help';
-import { trySubscribe } from './_utils';
+import { trySubscribe } from './utils/try-subscribe';
 import { Subject } from './subject';
 
 export class BehaviorSubject<T> extends Subject<T> {

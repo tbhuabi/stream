@@ -1,5 +1,5 @@
 import { Observer, Operator, PartialObserver, Publisher, Subscription } from './help'
-import { trySubscribe } from './_utils'
+import { trySubscribe } from './utils/try-subscribe'
 
 export class Stream<T> {
   constructor(protected source: Publisher<T> = observer => {
