@@ -1,13 +1,15 @@
-import { Stream, Operator } from '../core/_api';
+import { Stream, Operator } from '../core/_api'
 
-export function filter<T>(handle: (value: T) => boolean): Operator<T, T> {
+export function debounceTime<T>(time: number): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
     return new Stream<T>(observer => {
+      let timer: any;
       const sub = prevSteam.subscribe({
-        next(value: T) {
-          if (handle(value)) {
-            observer.next(value)
-          }
+        next(v: T) {
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            observer.next(v);
+          }, time);
         },
         error(err?: Error) {
           observer.error(err);
@@ -17,6 +19,7 @@ export function filter<T>(handle: (value: T) => boolean): Operator<T, T> {
         }
       })
       observer.onUnsubscribe(function () {
+        clearTimeout(timer);
         sub.unsubscribe()
       })
     })

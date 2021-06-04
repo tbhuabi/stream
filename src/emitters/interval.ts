@@ -1,4 +1,4 @@
-import { Stream } from '../core/stream';
+import { Stream } from '../core/_api';
 
 export function interval(delay = 1000, startCount = 0) {
   return new Stream<number>(observer => {
