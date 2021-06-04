@@ -8,4 +8,6 @@ const i = interval(1000).pipe(map(i => [i]), map(i => i[0])).subscribe(value => 
   if (value === 2) {
     i.unsubscribe()
   }
+}, err => {
+  console.log(err)
 })
