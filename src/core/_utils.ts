@@ -1,4 +1,4 @@
-import { NextObserver, Observer, PartialObserver } from './help';
+import { NextObserver, Observer, PartialObserver, Publisher } from './help';
 import { Stream } from './stream';
 
 function normalizeSubscribe<T>(observer: any, error?: any, complete?: any): Required<NextObserver<T>> {
@@ -24,7 +24,7 @@ function normalizeSubscribe<T>(observer: any, error?: any, complete?: any): Requ
 }
 
 export function trySubscribe<T>(
-  stream: Stream<T>,
+  source: Publisher<T>,
   observer: PartialObserver<T> | ((value: T) => void),
   error?: (err: any) => void,
   complete?: () => void) {
@@ -49,7 +49,7 @@ export function trySubscribe<T>(
       closeFn = callback;
     }
   }
-  stream.source(handle)
+  source(handle)
   return {
     closeFn,
     handle

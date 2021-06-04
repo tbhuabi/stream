@@ -1,22 +1,11 @@
-import { map, Stream, Subject, BehaviorSubject } from './src/public-api'
+import { map, Stream, Subject, BehaviorSubject, interval } from './src/public-api'
 
-
-let i = 0
-const stream = new BehaviorSubject<number>(6)
-
-const a = stream.subscribe(value => {
-  console.log('aaa', value)
-  // setTimeout(() => {
-  //   a.unsubscribe()
-  // })
+interval(1000).pipe(map(i => [i])).subscribe(value => {
+  console.log(value)
 })
-
-stream.subscribe(value => {
-  console.log('bbb', value)
+const i = interval(1000).pipe(map(i => [i]), map(i => i[0])).subscribe(value => {
+  console.log([value])
+  if (value === 2) {
+    i.unsubscribe()
+  }
 })
-
-stream.next(999)
-stream.next(111)
-// setTimeout(() => {
-//   stream.next(888)
-// }, 2000)

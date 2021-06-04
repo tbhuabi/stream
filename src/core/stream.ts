@@ -1,9 +1,9 @@
-import { Operator, PartialObserver, Publisher, Subscription } from './help'
+import { Observer, Operator, PartialObserver, Publisher, Subscription } from './help'
 import { trySubscribe } from './_utils'
 
 export class Stream<T> {
-  constructor(public source: Publisher<T> = observer => {
-    observer.next(void 0);
+  constructor(protected source: Publisher<T> = observer => {
+    (observer as Observer<any> as Observer<void>).next();
   }) {
   }
 
@@ -29,7 +29,7 @@ export class Stream<T> {
   subscribe(observer: PartialObserver<T>): Subscription;
   subscribe(observer: ((value: T) => void), error?: (err: any) => void, complete?: () => void): Subscription;
   subscribe(observer: any, error?: any, complete?: any): Subscription {
-    const n = trySubscribe(this, observer, error, complete)
+    const n = trySubscribe(this.source, observer, error, complete)
     return {
       unsubscribe() {
         n.closeFn();
