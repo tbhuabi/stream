@@ -7,9 +7,14 @@ import {
   fromEvent,
   auditTime,
   throttleTime,
-  debounceTime, take, zip, race, of, concat, delay
+  debounceTime, take, zip, race, of, concat, delay, merge
 } from './src/public-api'
 
+race(of(1), of('3')).subscribe(value => {
+
+})
+
+merge(of(1), of('2')).subscribe()
 
 let sub = interval(1000, 1).pipe(take(1))
   .pipe(
