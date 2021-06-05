@@ -7,7 +7,7 @@ import {
   fromEvent,
   auditTime,
   throttleTime,
-  debounceTime, take
+  debounceTime, take, zip, race
 } from './src/public-api'
 
 fromEvent(document.getElementById('button'), 'click')
