@@ -28,7 +28,7 @@ export function take<T>(count: number): Operator<T, T> {
           observer.complete();
         }
       }
-      const sub = prevStream.subscribe(observer);
+      const sub = prevStream.subscribe(subscribe);
     })
   }
 }

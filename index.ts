@@ -7,9 +7,14 @@ import {
   fromEvent,
   auditTime,
   throttleTime,
-  debounceTime
+  debounceTime, take
 } from './src/public-api'
 
-fromEvent(document.getElementById('button'), 'click').pipe(auditTime(2000)).subscribe(event => {
-  console.log(event)
-})
+fromEvent(document.getElementById('button'), 'click')
+  .pipe(
+    auditTime(1000),
+    take(2),
+  )
+  .subscribe(event => {
+    console.log(event)
+  })
