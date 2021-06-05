@@ -7,17 +7,17 @@ import { Stream, Operator } from '../core/_api'
 export function delay<T>(time = 0): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
     return new Stream<T>(observer => {
-      let timer: any;
+      let timers: any[] = [];
       let isComplete = false;
-      let isUnsubscribe = false;
       const sub = prevSteam.subscribe({
         next(v: T) {
-          timer = setTimeout(function () {
+          timers.push(setTimeout(function () {
+            timers.shift()
             observer.next(v);
-            if (isComplete && !isUnsubscribe) {
+            if (isComplete && timers.length === 0) {
               observer.complete();
             }
-          }, time);
+          }, time));
         },
         error(err?: Error) {
           observer.error(err);
@@ -27,8 +27,7 @@ export function delay<T>(time = 0): Operator<T, T> {
         }
       })
       observer.onUnsubscribe(function () {
-        isUnsubscribe = true;
-        clearTimeout(timer);
+        timers.forEach(i => clearTimeout(i));
         sub.unsubscribe()
       })
     })

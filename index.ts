@@ -20,16 +20,16 @@ let sub = interval(1000, 1)
     )
   ).subscribe(value => {
   console.log(value)
-  if (value === 3) {
-    sub.unsubscribe()
-  }
+  // if (value === 3) {
+  //   sub.unsubscribe()
+  // }
 }, err => {
   throw err
 }, () => {
   console.log('complete')
 })
 
-// of(1)
+// of(1, 2)
 //   .pipe(delay(1000))
 //   .subscribe(value => {
 //     console.log(value)

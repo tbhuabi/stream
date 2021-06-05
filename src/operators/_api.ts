@@ -1,5 +1,6 @@
 export * from './audit-time';
 export * from './debounce-time';
+export * from './concat';
 export * from './delay';
 export * from './distinct-until-changed';
 export * from './filter';
