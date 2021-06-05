@@ -10,6 +10,7 @@ export function concat<T>(...inputs: Stream<T>[]): Operator<T, T> {
       const streams = [prevSteam, ...inputs];
 
       let sub: Subscription;
+      let isUnsubscribe = false;
 
       function toNext() {
         const stream = streams.shift();
@@ -21,6 +22,9 @@ export function concat<T>(...inputs: Stream<T>[]): Operator<T, T> {
             observer.error(err);
           },
           complete() {
+            if (isUnsubscribe) {
+              return;
+            }
             if (streams.length === 0) {
               observer.complete();
               return;
@@ -29,6 +33,7 @@ export function concat<T>(...inputs: Stream<T>[]): Operator<T, T> {
           }
         })
         observer.onUnsubscribe(function () {
+          isUnsubscribe = true;
           sub.unsubscribe()
         })
       }

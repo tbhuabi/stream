@@ -29,6 +29,9 @@ export function take<T>(count: number): Operator<T, T> {
         }
       }
       const sub = prevStream.subscribe(subscribe);
+      observer.onUnsubscribe(() => {
+        sub.unsubscribe();
+      })
     })
   }
 }
