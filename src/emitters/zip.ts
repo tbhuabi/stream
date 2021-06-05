@@ -8,7 +8,6 @@ import { Stream } from '../core/_api';
 export function zip(...inputs: Stream<any>[]): Stream<any[]> {
   return new Stream<any[]>(observer => {
     if (inputs.length === 0) {
-      observer.next([]);
       observer.complete();
       return;
     }
