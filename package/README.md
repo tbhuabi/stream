@@ -101,7 +101,9 @@ fromEvent(document.getElementById('button'), 'click').subscribe(event => {
 })
 ```
 
-### 把 Promise 转换成数据流。
+### fromPromise
+
+把 Promise 转换成数据流。
 
 ```ts
 
@@ -216,8 +218,8 @@ interval()
   .pipe(take(4))
   .pipe(delay(2000))
   .subscribe(value => {
-  console.log(value)
-})
+    console.log(value)
+  })
 // 多参数调用
 interval().pipe(
   take(4),
