@@ -1,5 +1,9 @@
 import { Stream, Operator, PartialObserver } from '../core/_api'
 
+/**
+ * 根据源值，返回一个新的数据流，并以新数据流的订阅结果，发送出去
+ * @param handle
+ */
 export function switchMap<T, U>(handle: (value: T) => Stream<U>): Operator<T, U> {
   return function (prevSteam: Stream<T>) {
     return new Stream<U>(observer => {
@@ -7,8 +11,13 @@ export function switchMap<T, U>(handle: (value: T) => Stream<U>): Operator<T, U>
         next(value: T) {
           handle(value).subscribe(value2 => {
             observer.next(value2);
-          }, err => {
+          }, function (err) {
             subscriber.error(err)
+          }, function () {
+            if (sub) {
+              sub.unsubscribe();
+            }
+            subscriber.complete()
           })
         },
         error(err?: Error) {

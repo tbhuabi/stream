@@ -1,5 +1,10 @@
 import { Observer, Stream } from '../core/_api';
 
+/**
+ * 绑定 DOM 事件，并转换为数据流
+ * @param element 要绑定事件的 DOM 元素
+ * @param type 事件名
+ */
 export function fromEvent<T extends Event>(element: Element, type: string) {
   const observers: Observer<T>[] = [];
 

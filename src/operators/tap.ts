@@ -1,17 +1,16 @@
-import { Stream, Operator } from '../core/_api';
+import { Stream, Operator } from '../core/_api'
 
 /**
- * 过滤源数据流，只发送返回为 true 时的数据
- * @param handle
+ * 在数据流中添加副作用
+ * @param callback 副作用函数
  */
-export function filter<T>(handle: (value: T) => boolean): Operator<T, T> {
+export function tap<T>(callback: () => void): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
     return new Stream<T>(observer => {
       const sub = prevSteam.subscribe({
-        next(value: T) {
-          if (handle(value)) {
-            observer.next(value)
-          }
+        next(v: T) {
+          callback()
+          observer.next(v);
         },
         error(err?: Error) {
           observer.error(err);

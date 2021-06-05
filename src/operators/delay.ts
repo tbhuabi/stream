@@ -1,17 +1,18 @@
-import { Stream, Operator } from '../core/_api';
+import { Stream, Operator } from '../core/_api'
 
 /**
- * 过滤源数据流，只发送返回为 true 时的数据
- * @param handle
+ * 将源数据流延迟一段时间再发送
+ * @param time
  */
-export function filter<T>(handle: (value: T) => boolean): Operator<T, T> {
+export function delay<T>(time: number): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
     return new Stream<T>(observer => {
+      let timer: any;
       const sub = prevSteam.subscribe({
-        next(value: T) {
-          if (handle(value)) {
-            observer.next(value)
-          }
+        next(v: T) {
+          timer = setTimeout(function () {
+            observer.next(v);
+          }, time);
         },
         error(err?: Error) {
           observer.error(err);
@@ -21,6 +22,7 @@ export function filter<T>(handle: (value: T) => boolean): Operator<T, T> {
         }
       })
       observer.onUnsubscribe(function () {
+        clearTimeout(timer);
         sub.unsubscribe()
       })
     })
