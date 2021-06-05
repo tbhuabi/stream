@@ -18,7 +18,23 @@ export class Subject<T> extends Stream<T> {
 
   next(newValue: T) {
     [...this.observers].forEach(observer => {
-      observer.next(newValue);
+      try {
+        observer.next(newValue);
+      } catch (e) {
+        observer.error(e);
+      }
+    })
+  }
+
+  error(err: Error) {
+    [...this.observers].forEach(observer => {
+      observer.error(err);
+    })
+  }
+
+  complete() {
+    [...this.observers].forEach(observer => {
+      observer.complete();
     })
   }
 }

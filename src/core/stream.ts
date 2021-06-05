@@ -41,5 +41,11 @@ export class Stream<T> {
       }
     }
   }
+
+  toPromise(): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.subscribe(value => resolve(value), err => reject(err));
+    })
+  }
 }
 
