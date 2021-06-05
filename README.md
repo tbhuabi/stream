@@ -1,7 +1,7 @@
 Stream 数据流处理库
 ======================
 
-##安装
+## 安装
 
 ```
 npm install @tanbo/stream
