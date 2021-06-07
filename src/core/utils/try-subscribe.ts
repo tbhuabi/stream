@@ -30,8 +30,12 @@ export function trySubscribe<T>(
   const handlers = normalizeSubscribe(observer, error, complete);
   let closeFn = function () {
   }
+  let isComplete = false
   const handle: Observer<T> = {
     next(value: T) {
+      if (isComplete) {
+        return;
+      }
       try {
         handlers.next(value)
       } catch (e) {
@@ -39,9 +43,16 @@ export function trySubscribe<T>(
       }
     },
     error(err: Error) {
+      if (isComplete) {
+        return;
+      }
       handlers.error(err)
     },
     complete() {
+      if (isComplete) {
+        return;
+      }
+      isComplete = true;
       handlers.complete()
     },
     onUnsubscribe(callback: () => void) {
