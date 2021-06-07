@@ -2,8 +2,7 @@ import { Observer, Operator, PartialObserver, Publisher, Subscription } from './
 import { trySubscribe } from './utils/try-subscribe'
 
 export class Stream<T> {
-  constructor(protected source: Publisher<T> = observer => {
-    (observer as Observer<any> as Observer<void>).next();
+  constructor(protected source: Publisher<T> = () => {
   }) {
   }
 
