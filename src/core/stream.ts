@@ -2,7 +2,8 @@ import { Observer, Operator, PartialObserver, Publisher, Subscription } from './
 import { trySubscribe } from './utils/try-subscribe'
 
 export class Stream<T> {
-  constructor(protected source: Publisher<T> = () => {
+  constructor(protected source: Publisher<T> = observer => {
+    observer.complete();
   }) {
   }
 
