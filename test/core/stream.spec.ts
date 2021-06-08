@@ -88,10 +88,17 @@ describe('Stream 同步订阅', () => {
     expect(b).toBeTruthy()
   })
 
-  test('抛出异常', () => {
+  test('主动抛出异常', () => {
     const err = new Error()
     const stream = new Stream(observer => {
       observer.error(err)
+    })
+    expect(() => stream.subscribe()).toThrowError(err)
+  })
+  test('被动抛出异常', () => {
+    const err = new Error()
+    const stream = new Stream(() => {
+      throw err;
     })
     expect(() => stream.subscribe()).toThrowError(err)
   })

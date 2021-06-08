@@ -9,7 +9,7 @@ export function fromEvent<T extends Event>(element: Element, type: string) {
   const observers: Observer<T>[] = [];
 
   function listenFn(event) {
-    return observers.forEach(observer => {
+    return [...observers].forEach(observer => {
       observer.next(event);
     })
   }
