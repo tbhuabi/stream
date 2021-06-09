@@ -5,7 +5,7 @@ import { Stream } from '../core/_api';
  * @param delay 要延迟的时间
  * @param data 要发送的值
  */
-export function timeout<T>(delay = 1000, data?: T) {
+export function timeout<T>(delay = 1000, data: T = (0 as any)) {
   return new Stream<T>(observer => {
     let timer = setTimeout(function () {
       observer.next(data);
