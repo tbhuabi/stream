@@ -29,20 +29,25 @@ export function zip<T>(...inputs: Stream<T>[]): Stream<T[]> {
     });
 
     let isPublished = false;
-    const subs = marks.map(i => {
-      return i.source.subscribe(value => {
-        i.value = value;
-        i.hasMessage = true;
+    const subs = marks.map(config => {
+      return config.source.subscribe(value => {
+        config.value = value;
+        config.hasMessage = true;
         if (marks.every(o => o.hasMessage)) {
           isPublished = true;
+          if (subs) {
+            subs.forEach(i => i.unsubscribe());
+          }
           observer.next(marks.map(j => j.value));
           observer.complete()
         }
       }, function (err) {
         observer.error(err);
       }, function () {
-        subs.forEach(i => i.unsubscribe());
-        observer.complete();
+        if (subs && !config.hasMessage) {
+          subs.forEach(i => i.unsubscribe());
+          observer.complete();
+        }
       })
     })
     if (isPublished) {
