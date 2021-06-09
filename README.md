@@ -193,7 +193,7 @@ timeout().subscribe(() => {
 
 ### zip
 
-同时订阅多个数据流，当所有数据流都有值时，将接收到最新的值按参数顺序组成数据向后发送。可以理解为 `Promise.all`。
+监听一组数据流，当所有数据到达时，将最新数据按输入顺序，以一个数组的形式发送并忽略后面的所有数据。可以理解为 `Promise.all`。
 
 ```ts
 zip(of(1), of(2), timeout(1000, 'timeout')).subscribe(value => {

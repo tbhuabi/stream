@@ -1,8 +1,7 @@
 import { Stream } from '../core/_api';
 
 /**
- * 监听一组数据流，当所有数据到达时，将数据按输入顺序，以一个数组的形式发送，
- * 同时重置状态，当下一次所有数据到达时，再次发送
+ * 监听一组数据流，当所有数据到达时，将最新数据按输入顺序，以一个数组的形式发送并忽略后面的所有数据
  */
 export function zip<T1>(s1: Stream<T1>): Stream<[T1]>;
 export function zip<T1, T2>(s1: Stream<T1>, s2: Stream<T2>): Stream<[T1, T2]>;
@@ -29,13 +28,15 @@ export function zip<T>(...inputs: Stream<T>[]): Stream<T[]> {
       }
     });
 
+    let isPublished = false;
     const subs = marks.map(i => {
       return i.source.subscribe(value => {
         i.value = value;
         i.hasMessage = true;
         if (marks.every(o => o.hasMessage)) {
-          marks.forEach(k => k.hasMessage = false);
+          isPublished = true;
           observer.next(marks.map(j => j.value));
+          observer.complete()
         }
       }, function (err) {
         observer.error(err);
@@ -44,5 +45,8 @@ export function zip<T>(...inputs: Stream<T>[]): Stream<T[]> {
         observer.complete();
       })
     })
+    if (isPublished) {
+      subs.forEach(i => i.unsubscribe());
+    }
   })
 }
