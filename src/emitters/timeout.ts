@@ -10,7 +10,7 @@ export function timeout<T>(delay = 1000, data?: T) {
     let timer = setTimeout(function () {
       observer.next(data);
       observer.complete();
-    })
+    }, delay)
     observer.onUnsubscribe(function () {
       clearTimeout(timer);
     })
