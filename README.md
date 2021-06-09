@@ -171,9 +171,7 @@ of(1, 2, 3).subscribe(value => {
 
 ### race
 
-同时订阅多个数据流，当任意一个数据流有新值时，立即将该值发送出去，同时忽略其它的数据流，当所有的数据流均有接收到新值时，再发送下一个最新的数据，一直往复。
-
-可以理解为，争先原则，即第一个通过，其它均不通过，直至上一个周期结束。
+同时订阅多个数据流，当任意一个数据流有新值时，立即将该值发送出去，同时忽略后面所有的值
 
 ```ts
 race(interval(1000), of('a')).subscribe(value => {
@@ -218,8 +216,8 @@ interval()
   .pipe(take(4))
   .pipe(delay(2000))
   .subscribe(value => {
-  console.log(value)
-})
+    console.log(value)
+  })
 // 多参数调用
 interval().pipe(
   take(4),
