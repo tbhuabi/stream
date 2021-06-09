@@ -8,9 +8,10 @@ import {
   auditTime,
   throttleTime,
   switchMap,
-  debounceTime, take, zip, race, of, concat, delay, merge, distinctUntilChanged
+  debounceTime, take, zip, race, of, concat, delay, merge, distinctUntilChanged, timeout
 } from './src/public-api'
 
-interval(1000).pipe(throttleTime(2000)).subscribe(value => {
-  console.log(value);
+
+zip(of(1), timeout(0, 1)).subscribe(value => {
+  console.log(value)
 })
