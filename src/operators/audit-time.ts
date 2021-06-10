@@ -6,32 +6,44 @@ import { Stream, Operator } from '../core/_api'
  */
 export function auditTime<T>(time: number): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
-    return new Stream<T>(observer => {
-      let canPublish = false
+    return new Stream<T>(subscriber => {
+      let canPublish = true
       let timer: any;
       let value: T;
+      let isComplete = false
+      let hasError = false
       const sub = prevSteam.subscribe({
         next(v: T) {
           value = v;
-          if (!canPublish) {
-            canPublish = true;
+          if (canPublish) {
+            canPublish = false;
             timer = setTimeout(() => {
-              canPublish = false;
-              observer.next(value)
+              canPublish = true;
+              subscriber.next(value)
+              if (isComplete) {
+                subscriber.complete();
+              }
             }, time)
           }
         },
         error(err?: Error) {
-          observer.error(err);
+          hasError = true
+          if (sub) {
+            sub.unsubscribe();
+          }
+          subscriber.error(err);
         },
         complete() {
-          observer.complete();
+          isComplete = true
         }
       })
-      observer.onUnsubscribe(function () {
+      if (hasError) {
+        sub.unsubscribe()
+      }
+      return function () {
         clearTimeout(timer);
         sub.unsubscribe()
-      })
+      }
     })
   }
 }

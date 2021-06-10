@@ -11,7 +11,6 @@ export function fromPromise<T>(input: Promise<T>): Stream<T> {
       observer.complete();
     }).catch(e => {
       observer.error(e);
-      observer.complete();
     })
   })
 }

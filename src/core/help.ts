@@ -38,4 +38,4 @@ export interface CompletionObserver<T> {
 
 export type PartialObserver<T> = NextObserver<T> | ErrorObserver<T> | CompletionObserver<T>;
 
-export type Publisher<T> = (observer: Observer<T>) => void;
+export type Publisher<T> = (observer: Observer<T>) => Subscription | Function | void;

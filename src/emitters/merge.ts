@@ -25,12 +25,28 @@ export function merge<T>(...inputs: Stream<T>[]): Stream<T> {
         isComplete: false
       }
     })
+    let hasError = false
     const subs = marks.map(s => {
       return s.source.subscribe(value => {
-        observer.next(value);
+        if (hasError) {
+          return;
+        }
+        try {
+          observer.next(value);
+        } catch (e) {
+          hasError = true;
+          throw e;
+        }
       }, err => {
+        if (hasError) {
+          return
+        }
+        hasError = true;
         observer.error(err);
       }, () => {
+        if (hasError) {
+          return;
+        }
         s.isComplete = true;
         if (marks.every(i => i.isComplete)) {
           observer.complete();

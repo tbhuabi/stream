@@ -30,29 +30,32 @@ export function trySubscribe<T>(
   const handlers = normalizeSubscribe(observer, error, complete);
   let isUnsubscribe = false;
   let isComplete = false;
+  let hasError = false
 
   let closeFn = function () {
     isUnsubscribe = true;
   }
   const handle: Observer<T> = {
     next(value: T) {
-      if (isComplete || isUnsubscribe) {
+      if (isComplete || isUnsubscribe || hasError) {
         return;
       }
       try {
         handlers.next(value)
       } catch (e) {
-        handlers.error(e)
+        hasError = true
+        throw e
       }
     },
     error(err: Error) {
-      if (isComplete || isUnsubscribe) {
+      if (isComplete || isUnsubscribe || hasError) {
         return;
       }
-      handlers.error(err)
+      hasError = true;
+      handlers.error(err);
     },
     complete() {
-      if (isComplete || isUnsubscribe) {
+      if (isComplete || isUnsubscribe || hasError) {
         return;
       }
       isComplete = true;

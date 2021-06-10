@@ -1,8 +1,45 @@
 import { Observer, Operator, PartialObserver, Publisher, Subscription } from './help'
 import { trySubscribe } from './utils/try-subscribe'
 
+class Subscriber<T> {
+  private closed = false
+  private destinationOrNext: Required<PartialObserver<T>>;
+
+  constructor(destinationOrNext: PartialObserver<any> | ((value: T) => void)) {
+    // if(typeof destinationOrNext === 'function'){
+    //   this.destinationOrNext
+    // }
+  }
+
+  next(value: T) {
+    if (this.closed) {
+      return;
+    }
+    this.destinationOrNext.next(value);
+  }
+
+  error(err: any) {
+    if (this.closed) {
+      return;
+    }
+    this.closed = true;
+    if (this.destinationOrNext.error) {
+      this.destinationOrNext.error(err);
+    }
+    throw err;
+  }
+
+  complete() {
+    if (this.closed) {
+      return;
+    }
+    this.closed = true
+    this.destinationOrNext.complete();
+  }
+}
+
 export class Stream<T> {
-  constructor(protected source: Publisher<T> = observer => {
+  constructor(protected source: (subscriber: Subscriber<T>) => Subscription | Function | void = observer => {
     observer.complete();
   }) {
   }
@@ -34,10 +71,30 @@ export class Stream<T> {
     },
     error?: any,
     complete?: any): Subscription {
-    const n = trySubscribe(this.source, observer, error, complete)
+    let subscriber: Subscriber<T>;
+    if (typeof observer === 'function') {
+      subscriber = new Subscriber({
+        next: observer,
+        error,
+        complete
+      })
+    } else {
+      subscriber = new Subscriber(observer);
+    }
+
+    const unsubscription = this.source(subscriber);
+
+    if (typeof unsubscription === 'function') {
+      return {
+        unsubscribe() {
+          unsubscription()
+        }
+      }
+    } else if (typeof (unsubscription as Subscription).unsubscribe === 'function') {
+      return unsubscription as Subscription
+    }
     return {
       unsubscribe() {
-        n.closeFn();
       }
     }
   }

@@ -42,37 +42,20 @@ describe('Stream 同步订阅', () => {
   })
   test('兼容两种订阅方式', () => {
     const data = {}
-    const err = new Error()
     const stream = new Stream<any>(observer => {
       observer.next(data);
-      observer.error(err);
-      observer.complete()
     })
 
     let d1 = null;
-    let e1 = null;
-    let c1 = false;
-
     let d2 = null;
-    let e2 = null;
-    let c2 = false;
-    stream.subscribe(value => d1 = value, err => e1 = err, () => c1 = true);
+    stream.subscribe(value => d1 = value);
     stream.subscribe({
       next(value) {
         d2 = value
-      },
-      error(err) {
-        e2 = err
-      },
-      complete() {
-        c2 = true;
       }
     });
 
     expect(d1).toBe(d2)
-    expect(e1).toBe(e2)
-    expect(c1).toBe(c2)
-    expect(c1).toBeTruthy()
   })
   test('捕获异常', () => {
     const err = new Error()
