@@ -1,14 +1,16 @@
 import { PartialObserver, Subscription } from './help';
-import { trySubscribe } from './utils/try-subscribe';
 import { Subject } from './subject';
 
 export class BehaviorSubject<T> extends Subject<T> {
-  constructor(private defaultValue: T) {
+  private currentValue: T;
+
+  constructor(defaultValue: T) {
     super()
+    this.currentValue = defaultValue;
   }
 
   next(newValue: T) {
-    this.defaultValue = newValue;
+    this.currentValue = newValue;
     super.next(newValue);
   }
 
@@ -19,12 +21,9 @@ export class BehaviorSubject<T> extends Subject<T> {
     },
     error?: any,
     complete?: any): Subscription {
-    const n = trySubscribe(this.source, observer, error, complete)
-    n.handle.next(this.defaultValue);
-    return {
-      unsubscribe() {
-        n.closeFn();
-      }
-    }
+    const subscriber = this.toSubscriber(observer, error, complete);
+    const subscription = this.trySubscribe(subscriber);
+    subscriber.next(this.currentValue);
+    return subscription;
   }
 }

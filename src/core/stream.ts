@@ -82,19 +82,37 @@ export class Stream<T> {
     },
     error?: any,
     complete?: any): Subscription {
-    let subscriber: Subscriber<T>;
+
+    const subscriber = this.toSubscriber(observer, error, complete);
+
+    return this.trySubscribe(subscriber);
+  }
+
+  toPromise(): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      this.subscribe(value => resolve(value), err => reject(err));
+    })
+  }
+
+  protected toSubscriber(observer?: PartialObserver<T>): Subscriber<T>;
+  protected toSubscriber(observer?: ((value: T) => void), error?: (err: any) => void, complete?: () => void): Subscriber<T>;
+  protected toSubscriber(
+    observer: any = function () {
+    },
+    error?: any,
+    complete?: any) {
     if (typeof observer === 'function') {
-      subscriber = new Subscriber({
+      return new Subscriber<T>({
         next: observer,
         error,
         complete
       })
-    } else {
-      subscriber = new Subscriber(observer);
     }
+    return new Subscriber<T>(observer);
+  }
 
+  protected trySubscribe(subscriber: Subscriber<T>) {
     const unsubscription = this.source(subscriber);
-
     if (typeof unsubscription === 'function') {
       return new Subscription(function () {
         subscriber.closed = true;
@@ -108,12 +126,6 @@ export class Stream<T> {
     }
     return new Subscription(function () {
       subscriber.closed = true;
-    })
-  }
-
-  toPromise(): Promise<T> {
-    return new Promise<T>((resolve, reject) => {
-      this.subscribe(value => resolve(value), err => reject(err));
     })
   }
 }
