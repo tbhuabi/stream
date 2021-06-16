@@ -45,7 +45,7 @@ describe('merge', () => {
       }
     })
   })
-  test('可捕获所有异常', done => {
+  test('只触发一次异常', done => {
     const arr = []
     merge(
       fromPromise(
@@ -64,12 +64,12 @@ describe('merge', () => {
     ).subscribe({
       error(err) {
         arr.push(err)
-      },
-      complete() {
-        expect(arr.length).toBe(2)
-        done()
       }
     })
+    setTimeout(() => {
+      expect(arr.length).toBe(1)
+      done()
+    }, 10)
   })
   test('取消订阅后不再接收数据', done => {
     const arr = []

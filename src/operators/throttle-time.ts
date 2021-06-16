@@ -6,30 +6,30 @@ import { Stream, Operator } from '../core/_api'
  */
 export function throttleTime<T>(time: number): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
-    return new Stream<T>(observer => {
+    return new Stream<T>(subscriber => {
       let canPublish = true
       let timer: any;
       const sub = prevSteam.subscribe({
         next(v: T) {
           if (canPublish) {
             canPublish = false;
-            observer.next(v)
+            subscriber.next(v)
             timer = setTimeout(() => {
               canPublish = true;
             }, time)
           }
         },
         error(err?: Error) {
-          observer.error(err);
+          subscriber.error(err);
         },
         complete() {
-          observer.complete();
+          subscriber.complete();
         }
       })
-      observer.onUnsubscribe(function () {
+      return function () {
         clearTimeout(timer);
         sub.unsubscribe()
-      })
+      }
     })
   }
 }

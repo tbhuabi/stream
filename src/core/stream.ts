@@ -1,14 +1,22 @@
-import { Observer, Operator, PartialObserver, Publisher, Subscription } from './help'
-import { trySubscribe } from './utils/try-subscribe'
+import { Operator, PartialObserver } from './help'
 
-class Subscriber<T> {
-  private closed = false
-  private destinationOrNext: Required<PartialObserver<T>>;
+export class Subscription {
+  constructor(public unsubscribe: () => void) {
+  }
+}
+
+export class Subscriber<T> {
+  closed = false
+  private destinationOrNext: Partial<PartialObserver<T>>;
 
   constructor(destinationOrNext: PartialObserver<any> | ((value: T) => void)) {
-    // if(typeof destinationOrNext === 'function'){
-    //   this.destinationOrNext
-    // }
+    if (typeof destinationOrNext === 'function') {
+      this.destinationOrNext = {
+        next: destinationOrNext
+      }
+    } else {
+      this.destinationOrNext = destinationOrNext;
+    }
   }
 
   next(value: T) {
@@ -25,6 +33,7 @@ class Subscriber<T> {
     this.closed = true;
     if (this.destinationOrNext.error) {
       this.destinationOrNext.error(err);
+      return;
     }
     throw err;
   }
@@ -34,12 +43,14 @@ class Subscriber<T> {
       return;
     }
     this.closed = true
-    this.destinationOrNext.complete();
+    if (this.destinationOrNext.complete) {
+      this.destinationOrNext.complete();
+    }
   }
 }
 
 export class Stream<T> {
-  constructor(protected source: (subscriber: Subscriber<T>) => Subscription | Function | void = observer => {
+  constructor(public source: (subscriber: Subscriber<T>) => Subscription | (() => void) | void = observer => {
     observer.complete();
   }) {
   }
@@ -85,18 +96,19 @@ export class Stream<T> {
     const unsubscription = this.source(subscriber);
 
     if (typeof unsubscription === 'function') {
-      return {
-        unsubscribe() {
-          unsubscription()
-        }
-      }
-    } else if (typeof (unsubscription as Subscription).unsubscribe === 'function') {
-      return unsubscription as Subscription
+      return new Subscription(function () {
+        subscriber.closed = true;
+        unsubscription()
+      });
+    } else if (unsubscription instanceof Subscription) {
+      return new Subscription(function () {
+        subscriber.closed = true;
+        unsubscription.unsubscribe();
+      })
     }
-    return {
-      unsubscribe() {
-      }
-    }
+    return new Subscription(function () {
+      subscriber.closed = true;
+    })
   }
 
   toPromise(): Promise<T> {

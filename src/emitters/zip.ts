@@ -15,9 +15,9 @@ export function zip<T1, T2, T3, T4, T5, T6, T7, T8, T9>(s1: Stream<T1>, s2: Stre
 export function zip<T>(...inputs: Stream<T>[]): Stream<T[]>;
 export function zip(...inputs: Stream<any>[]): Stream<any[]>;
 export function zip<T>(...inputs: Stream<T>[]): Stream<T[]> {
-  return new Stream<T[]>(observer => {
+  return new Stream<T[]>(subscriber => {
     if (inputs.length === 0) {
-      observer.complete();
+      subscriber.complete();
       return;
     }
     const marks = inputs.map(i => {
@@ -38,15 +38,15 @@ export function zip<T>(...inputs: Stream<T>[]): Stream<T[]> {
           if (subs) {
             subs.forEach(i => i.unsubscribe());
           }
-          observer.next(marks.map(j => j.value));
-          observer.complete()
+          subscriber.next(marks.map(j => j.value));
+          subscriber.complete()
         }
       }, function (err) {
-        observer.error(err);
+        subscriber.error(err);
       }, function () {
         if (subs && !config.hasMessage) {
           subs.forEach(i => i.unsubscribe());
-          observer.complete();
+          subscriber.complete();
         }
       })
     })

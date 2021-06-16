@@ -37,19 +37,4 @@ describe('fromPromise', () => {
       }
     })
   })
-
-  test('异常结果触发完成', done => {
-    let i = false
-    fromPromise<boolean>(new Promise<boolean>(resolve => {
-      resolve(true)
-    })).subscribe({
-      error(v) {
-        i = v;
-      },
-      complete() {
-        expect(i).toBeTruthy()
-        done()
-      }
-    })
-  })
 })

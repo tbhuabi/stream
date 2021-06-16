@@ -6,31 +6,29 @@ import { Stream, Operator, PartialObserver } from '../core/_api'
  */
 export function switchMap<T, U>(handle: (value: T) => Stream<U>): Operator<T, U> {
   return function (prevSteam: Stream<T>) {
-    return new Stream<U>(observer => {
-      const subscriber: PartialObserver<T> = {
+    return new Stream<U>(subscriber => {
+      const obs: PartialObserver<T> = {
         next(value: T) {
           handle(value).subscribe(value2 => {
-            observer.next(value2);
+            subscriber.next(value2);
           }, function (err) {
-            subscriber.error(err)
+            obs.error(err)
           }, function () {
             if (sub) {
               sub.unsubscribe();
             }
-            subscriber.complete()
+            obs.complete()
           })
         },
         error(err?: Error) {
-          observer.error(err);
+          subscriber.error(err);
         },
         complete() {
-          observer.complete();
+          subscriber.complete();
         }
       }
-      const sub = prevSteam.subscribe(subscriber);
-      observer.onUnsubscribe(function () {
-        sub.unsubscribe()
-      })
+      const sub = prevSteam.subscribe(obs);
+      return sub;
     })
   }
 }

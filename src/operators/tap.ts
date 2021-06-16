@@ -6,21 +6,18 @@ import { Stream, Operator } from '../core/_api'
  */
 export function tap<T>(callback: () => void): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
-    return new Stream<T>(observer => {
-      const sub = prevSteam.subscribe({
+    return new Stream<T>(subscriber => {
+      return prevSteam.subscribe({
         next(v: T) {
           callback()
-          observer.next(v);
+          subscriber.next(v);
         },
         error(err?: Error) {
-          observer.error(err);
+          subscriber.error(err);
         },
         complete() {
-          observer.complete();
+          subscriber.complete();
         }
-      })
-      observer.onUnsubscribe(function () {
-        sub.unsubscribe()
       })
     })
   }

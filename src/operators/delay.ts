@@ -6,30 +6,30 @@ import { Stream, Operator } from '../core/_api'
  */
 export function delay<T>(time = 0): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
-    return new Stream<T>(observer => {
+    return new Stream<T>(subscriber => {
       let timers: any[] = [];
       let isComplete = false;
       const sub = prevSteam.subscribe({
         next(v: T) {
           timers.push(setTimeout(function () {
             timers.shift()
-            observer.next(v);
+            subscriber.next(v);
             if (isComplete && timers.length === 0) {
-              observer.complete();
+              subscriber.complete();
             }
           }, time));
         },
         error(err?: Error) {
-          observer.error(err);
+          subscriber.error(err);
         },
         complete() {
           isComplete = true
         }
       })
-      observer.onUnsubscribe(function () {
+      return function () {
         timers.forEach(i => clearTimeout(i));
         sub.unsubscribe()
-      })
+      }
     })
   }
 }

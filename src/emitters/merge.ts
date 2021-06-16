@@ -15,9 +15,9 @@ export function merge<T1, T2, T3, T4, T5, T6, T7, T8, T9>(s1: Stream<T1>, s2: St
 export function merge<T>(...inputs: Stream<T>[]): Stream<T>;
 export function merge(...inputs: Stream<any>[]): Stream<any>;
 export function merge<T>(...inputs: Stream<T>[]): Stream<T> {
-  return new Stream<T>(observer => {
+  return new Stream<T>(subscriber => {
     if (inputs.length === 0) {
-      observer.complete();
+      subscriber.complete();
     }
     const marks = inputs.map(i => {
       return {
@@ -25,36 +25,24 @@ export function merge<T>(...inputs: Stream<T>[]): Stream<T> {
         isComplete: false
       }
     })
-    let hasError = false
     const subs = marks.map(s => {
-      return s.source.subscribe(value => {
-        if (hasError) {
-          return;
-        }
-        try {
-          observer.next(value);
-        } catch (e) {
-          hasError = true;
-          throw e;
-        }
-      }, err => {
-        if (hasError) {
-          return
-        }
-        hasError = true;
-        observer.error(err);
-      }, () => {
-        if (hasError) {
-          return;
-        }
-        s.isComplete = true;
-        if (marks.every(i => i.isComplete)) {
-          observer.complete();
+      return s.source.subscribe({
+        next(value) {
+          subscriber.next(value)
+        },
+        error(err) {
+          subscriber.error(err);
+        },
+        complete() {
+          s.isComplete = true;
+          if (marks.every(i => i.isComplete)) {
+            subscriber.complete();
+          }
         }
       })
     })
-    observer.onUnsubscribe(() => {
+    return function () {
       subs.forEach(i => i.unsubscribe());
-    })
+    }
   })
 }

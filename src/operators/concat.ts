@@ -16,7 +16,7 @@ export function concat<T>(...inputs: Stream<T>[]): Operator<T, T>;
 export function concat<T>(...inputs: Stream<any>[]): Operator<T, T | any>;
 export function concat<T>(...inputs: Stream<T>[]): Operator<T, T> {
   return function (prevSteam: Stream<T>) {
-    return new Stream<T>(observer => {
+    return new Stream<T>(subscriber => {
       const streams = [prevSteam, ...inputs];
 
       let sub: Subscription;
@@ -26,26 +26,26 @@ export function concat<T>(...inputs: Stream<T>[]): Operator<T, T> {
         const stream = streams.shift();
         sub = stream.subscribe({
           next(value: T) {
-            observer.next(value)
+            subscriber.next(value)
           },
           error(err?: Error) {
-            observer.error(err);
+            subscriber.error(err);
           },
           complete() {
             if (isUnsubscribe) {
               return;
             }
             if (streams.length === 0) {
-              observer.complete();
+              subscriber.complete();
               return;
             }
             toNext();
           }
         })
-        observer.onUnsubscribe(function () {
+        return function () {
           isUnsubscribe = true;
           sub.unsubscribe()
-        })
+        }
       }
 
       toNext();

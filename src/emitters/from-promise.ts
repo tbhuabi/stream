@@ -5,12 +5,12 @@ import { Stream } from '../core/_api';
  * @param input
  */
 export function fromPromise<T>(input: Promise<T>): Stream<T> {
-  return new Stream<T>(observer => {
+  return new Stream<T>(subscriber => {
     input.then(v => {
-      observer.next(v);
-      observer.complete();
+      subscriber.next(v);
+      subscriber.complete();
     }).catch(e => {
-      observer.error(e);
+      subscriber.error(e);
     })
   })
 }

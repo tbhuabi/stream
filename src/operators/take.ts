@@ -7,31 +7,29 @@ import { Operator, PartialObserver, Stream } from '../core/_api';
 export function take<T>(count: number): Operator<T, T> {
   return function (prevStream: Stream<T>) {
     let i = 0;
-    return new Stream<T>(observer => {
-      const subscribe: PartialObserver<T> = {
+    return new Stream<T>(subscriber => {
+      const obs: PartialObserver<T> = {
         next(value) {
           if (i < count) {
-            observer.next(value);
+            subscriber.next(value);
             i++;
             if (i === count) {
-              subscribe.complete();
+              obs.complete();
             }
             return;
           }
-          subscribe.complete();
+          obs.complete();
         },
         error(err) {
-          observer.error(err);
+          subscriber.error(err);
         },
         complete() {
           sub.unsubscribe();
-          observer.complete();
+          subscriber.complete();
         }
       }
-      const sub = prevStream.subscribe(subscribe);
-      observer.onUnsubscribe(() => {
-        sub.unsubscribe();
-      })
+      const sub = prevStream.subscribe(obs);
+      return sub;
     })
   }
 }
