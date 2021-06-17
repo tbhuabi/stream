@@ -5,14 +5,14 @@ import { Stream, Operator } from '../core/_api'
  * @param time 要延迟的时间
  */
 export function auditTime<T>(time: number): Operator<T, T> {
-  return function (prevSteam: Stream<T>) {
+  return function (source: Stream<T>) {
     return new Stream<T>(subscriber => {
       let canPublish = true
       let timer: any;
       let value: T;
       let isComplete = false
       let hasError = false
-      const sub = prevSteam.subscribe({
+      const sub = source.subscribe({
         next(v: T) {
           value = v;
           if (canPublish) {

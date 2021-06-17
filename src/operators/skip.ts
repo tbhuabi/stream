@@ -5,26 +5,26 @@ import { Operator, PartialObserver, Stream } from '../core/_api';
  * @param count 要跳过的次数
  */
 export function skip<T>(count: number): Operator<T, T> {
-  return function (prevStream: Stream<T>) {
+  return function (source: Stream<T>) {
     let i = 0;
-    return new Stream<T>(observer => {
+    return new Stream<T>(subscriber => {
       const subscribe: PartialObserver<T> = {
         next(value) {
           if (i < count) {
             i++;
             return;
           }
-          observer.next(value);
+          subscriber.next(value);
         },
         error(err) {
-          observer.error(err);
+          subscriber.error(err);
         },
         complete() {
           sub.unsubscribe();
-          observer.complete();
+          subscriber.complete();
         }
       }
-      const sub = prevStream.subscribe(subscribe);
+      const sub = source.subscribe(subscribe);
       return sub;
     })
   }

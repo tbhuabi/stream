@@ -5,11 +5,11 @@ import { Stream, Operator } from '../core/_api'
  * @param time
  */
 export function delay<T>(time = 0): Operator<T, T> {
-  return function (prevSteam: Stream<T>) {
+  return function (source: Stream<T>) {
     return new Stream<T>(subscriber => {
       let timers: any[] = [];
       let isComplete = false;
-      const sub = prevSteam.subscribe({
+      const sub = source.subscribe({
         next(v: T) {
           timers.push(setTimeout(function () {
             timers.shift()

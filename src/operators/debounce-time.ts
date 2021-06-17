@@ -5,10 +5,10 @@ import { Stream, Operator } from '../core/_api'
  * @param time
  */
 export function debounceTime<T>(time: number): Operator<T, T> {
-  return function (prevSteam: Stream<T>) {
+  return function (source: Stream<T>) {
     return new Stream<T>(subscriber => {
       let timer: any;
-      const sub = prevSteam.subscribe({
+      const sub = source.subscribe({
         next(v: T) {
           clearTimeout(timer);
           timer = setTimeout(function () {

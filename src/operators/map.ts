@@ -5,9 +5,9 @@ import { Stream, Operator } from '../core/_api'
  * @param handle 转换函数
  */
 export function map<T, U>(handle: (value: T) => U): Operator<T, U> {
-  return function (prevSteam: Stream<T>) {
+  return function (source: Stream<T>) {
     return new Stream<U>(subscriber => {
-      return prevSteam.subscribe({
+      return source.subscribe({
         next(value: T) {
           subscriber.next(handle(value))
         },

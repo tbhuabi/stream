@@ -5,9 +5,9 @@ import { Stream, Operator } from '../core/_api';
  * @param handle
  */
 export function filter<T>(handle: (value: T) => boolean): Operator<T, T> {
-  return function (prevSteam: Stream<T>) {
+  return function (source: Stream<T>) {
     return new Stream<T>(subscriber => {
-      return prevSteam.subscribe({
+      return source.subscribe({
         next(value: T) {
           if (handle(value)) {
             subscriber.next(value)

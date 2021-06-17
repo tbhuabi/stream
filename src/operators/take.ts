@@ -5,7 +5,7 @@ import { Operator, PartialObserver, Stream } from '../core/_api';
  * @param count
  */
 export function take<T>(count: number): Operator<T, T> {
-  return function (prevStream: Stream<T>) {
+  return function (source: Stream<T>) {
     let i = 0;
     return new Stream<T>(subscriber => {
       const obs: PartialObserver<T> = {
@@ -28,7 +28,7 @@ export function take<T>(count: number): Operator<T, T> {
           subscriber.complete();
         }
       }
-      const sub = prevStream.subscribe(obs);
+      const sub = source.subscribe(obs);
       return sub;
     })
   }

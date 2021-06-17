@@ -5,9 +5,9 @@ import { Stream, Operator } from '../core/_api'
  * @param callback 副作用函数
  */
 export function tap<T>(callback: () => void): Operator<T, T> {
-  return function (prevSteam: Stream<T>) {
+  return function (source: Stream<T>) {
     return new Stream<T>(subscriber => {
-      return prevSteam.subscribe({
+      return source.subscribe({
         next(v: T) {
           callback()
           subscriber.next(v);

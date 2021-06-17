@@ -2,7 +2,7 @@ import { Subscriber } from './subscriber';
 import { Subscription } from './subscription';
 
 export interface Operator<T, U> {
-  (stream: Stream<T>): Stream<U>;
+  (source: Stream<T>): Stream<U>;
 }
 
 export interface NextObserver<T> {

@@ -5,7 +5,7 @@ import { Stream, Operator, PartialObserver } from '../core/_api'
  * @param handle
  */
 export function switchMap<T, U>(handle: (value: T) => Stream<U>): Operator<T, U> {
-  return function (prevSteam: Stream<T>) {
+  return function (source: Stream<T>) {
     return new Stream<U>(subscriber => {
       const obs: PartialObserver<T> = {
         next(value: T) {
@@ -27,7 +27,7 @@ export function switchMap<T, U>(handle: (value: T) => Stream<U>): Operator<T, U>
           subscriber.complete();
         }
       }
-      const sub = prevSteam.subscribe(obs);
+      const sub = source.subscribe(obs);
       return sub;
     })
   }
