@@ -1,5 +1,4 @@
-import { Stream } from './stream';
-import { Observer } from './help'
+import { Stream, Observer } from './stream';
 
 export class Subject<T> extends Stream<T> {
   private subscribers: Observer<T>[] = [];

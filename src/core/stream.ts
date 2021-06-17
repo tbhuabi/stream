@@ -1,53 +1,39 @@
-import { Operator, PartialObserver } from './help'
+import { Subscriber } from './subscriber';
+import { Subscription } from './subscription';
 
-export class Subscription {
-  constructor(public unsubscribe: () => void) {
-  }
+export interface Observer<T> {
+  next(value: T): void;
+
+  error(err?: Error): void;
+
+  complete(): void;
+
+  onUnsubscribe?(callback: () => void);
 }
 
-export class Subscriber<T> {
-  closed = false
-  private destinationOrNext: Partial<PartialObserver<T>>;
-
-  constructor(destinationOrNext: PartialObserver<any> | ((value: T) => void)) {
-    if (typeof destinationOrNext === 'function') {
-      this.destinationOrNext = {
-        next: destinationOrNext
-      }
-    } else {
-      this.destinationOrNext = destinationOrNext;
-    }
-  }
-
-  next(value: T) {
-    if (this.closed) {
-      return;
-    }
-    this.destinationOrNext.next(value);
-  }
-
-  error(err: any) {
-    if (this.closed) {
-      return;
-    }
-    this.closed = true;
-    if (this.destinationOrNext.error) {
-      this.destinationOrNext.error(err);
-      return;
-    }
-    throw err;
-  }
-
-  complete() {
-    if (this.closed) {
-      return;
-    }
-    this.closed = true
-    if (this.destinationOrNext.complete) {
-      this.destinationOrNext.complete();
-    }
-  }
+export interface Operator<T, U> {
+  (stream: Stream<T>): Stream<U>;
 }
+
+export interface NextObserver<T> {
+  next: (value: T) => void;
+  error?: (err: any) => void;
+  complete?: () => void;
+}
+
+export interface ErrorObserver<T> {
+  next?: (value: T) => void;
+  error: (err: any) => void;
+  complete?: () => void;
+}
+
+export interface CompletionObserver<T> {
+  next?: (value: T) => void;
+  error?: (err: any) => void;
+  complete: () => void;
+}
+
+export type PartialObserver<T> = NextObserver<T> | ErrorObserver<T> | CompletionObserver<T>;
 
 export class Stream<T> {
   constructor(public source: (subscriber: Subscriber<T>) => Subscription | (() => void) | void = observer => {
@@ -79,6 +65,7 @@ export class Stream<T> {
   subscribe(observer?: ((value: T) => void), error?: (err: any) => void, complete?: () => void): Subscription;
   subscribe(
     observer: any = function () {
+      //
     },
     error?: any,
     complete?: any): Subscription {
@@ -97,8 +84,7 @@ export class Stream<T> {
   protected toSubscriber(observer?: PartialObserver<T>): Subscriber<T>;
   protected toSubscriber(observer?: ((value: T) => void), error?: (err: any) => void, complete?: () => void): Subscriber<T>;
   protected toSubscriber(
-    observer: any = function () {
-    },
+    observer: any,
     error?: any,
     complete?: any) {
     if (typeof observer === 'function') {
