@@ -12,14 +12,12 @@ import {
 } from './src/public-api'
 
 
-of(1, 2, 3).pipe(delay(3000)).subscribe({
-  next(v) {
-    throw new Error('xxx')
-  },
-  // error(err) {
-  //   console.log(err)
-  // },
-  complete() {
-    console.log('complete')
+new Stream(subscriber => {
+  setTimeout(() => {
+    subscriber.error(333)
+  })
+}).pipe(delay(30000)).subscribe({
+  error() {
+    console.log(['fdsafdas'])
   }
 })

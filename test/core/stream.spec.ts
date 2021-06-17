@@ -3,8 +3,8 @@ import { Stream } from '@tanbo/stream';
 describe('Stream 同步订阅', () => {
   test('实时拿到结果', () => {
     const value = 5
-    const stream = new Stream<number>(observer => {
-      observer.next(value)
+    const stream = new Stream<number>(subscriber => {
+      subscriber.next(value)
     })
 
     stream.subscribe(v => {
@@ -13,8 +13,8 @@ describe('Stream 同步订阅', () => {
   })
   test('实时拿到结果', () => {
     const values = [1, 3, 6]
-    const stream = new Stream<number>(observer => {
-      values.forEach(i => observer.next(i))
+    const stream = new Stream<number>(subscriber => {
+      values.forEach(i => subscriber.next(i))
     })
 
     const result: number[] = [];
@@ -30,9 +30,9 @@ describe('Stream 同步订阅', () => {
 
   test('每次订阅，创建新的数据流', () => {
     let i = 0
-    const stream = new Stream<number>(observer => {
+    const stream = new Stream<number>(subscriber => {
       i++
-      observer.next(5)
+      subscriber.next(5)
     })
 
     stream.subscribe()
@@ -42,8 +42,8 @@ describe('Stream 同步订阅', () => {
   })
   test('兼容两种订阅方式', () => {
     const data = {}
-    const stream = new Stream<any>(observer => {
-      observer.next(data);
+    const stream = new Stream<any>(subscriber => {
+      subscriber.next(data);
     })
 
     let d1 = null;
@@ -57,10 +57,10 @@ describe('Stream 同步订阅', () => {
 
     expect(d1).toBe(d2)
   })
-  test('捕获异常', () => {
+  test('捕获异常主动异常', () => {
     const err = new Error()
-    const stream = new Stream(observer => {
-      observer.error(err)
+    const stream = new Stream(subscriber => {
+      subscriber.error(err)
     })
     let b = false
     stream.subscribe({
@@ -71,12 +71,45 @@ describe('Stream 同步订阅', () => {
     expect(b).toBeTruthy()
   })
 
+  test('捕获异常被动异常', () => {
+    const err = new Error()
+    const stream = new Stream(() => {
+      throw err;
+    })
+    let b = false
+    stream.subscribe({
+      error(e) {
+        b = e === err
+      }
+    })
+    expect(b).toBeTruthy()
+  })
+
+  test('不捕获订阅回调内异常', () => {
+    const err = new Error()
+    const stream = new Stream(subscriber => {
+      subscriber.next(333)
+    })
+    let isCatch = false
+    expect(() => {
+      stream.subscribe({
+        next() {
+          throw err
+        },
+        error() {
+          isCatch = true;
+        }
+      })
+    }).toThrowError()
+    expect(isCatch).toBeFalsy();
+  })
+
   test('主动抛出异常', () => {
     const err = new Error()
-    const stream = new Stream(observer => {
-      observer.error(err)
+    const stream = new Stream(subscriber => {
+      subscriber.error(err)
     })
-    expect(() => stream.subscribe()).toThrowError(err)
+    expect(() => stream.subscribe()).toThrowError()
   })
   test('被动抛出异常', () => {
     const err = new Error()
@@ -86,8 +119,8 @@ describe('Stream 同步订阅', () => {
     expect(() => stream.subscribe()).toThrowError(err)
   })
   test('正常结束', () => {
-    const stream = new Stream(observer => {
-      observer.complete()
+    const stream = new Stream(subscriber => {
+      subscriber.complete()
     })
     let b = false
     stream.subscribe({
@@ -99,9 +132,9 @@ describe('Stream 同步订阅', () => {
   })
 
   test('结束后，不能再发送数据', () => {
-    const stream = new Stream(observer => {
-      observer.complete()
-      observer.next({})
+    const stream = new Stream(subscriber => {
+      subscriber.complete()
+      subscriber.next({})
     })
     let b = false
     stream.subscribe({
@@ -113,9 +146,9 @@ describe('Stream 同步订阅', () => {
   })
 
   test('结束后，不能再发送异常', () => {
-    const stream = new Stream(observer => {
-      observer.complete()
-      observer.error(new Error())
+    const stream = new Stream(subscriber => {
+      subscriber.complete()
+      subscriber.error(new Error())
     })
     let b = false
     stream.subscribe({
@@ -128,9 +161,9 @@ describe('Stream 同步订阅', () => {
 
   test('不能多次结束', () => {
     let i = 0
-    const stream = new Stream(observer => {
-      observer.complete()
-      observer.complete()
+    const stream = new Stream(subscriber => {
+      subscriber.complete()
+      subscriber.complete()
     })
     stream.subscribe({
       complete() {
@@ -155,9 +188,9 @@ describe('Stream 同步订阅', () => {
 describe('Stream 异步订阅', () => {
   test('正确获取到到结果', async () => {
     const value = 5
-    const stream = new Stream<number>(observer => {
+    const stream = new Stream<number>(subscriber => {
       setTimeout(() => {
-        observer.next(value)
+        subscriber.next(value)
       })
     })
 
@@ -170,11 +203,11 @@ describe('Stream 异步订阅', () => {
   })
 
   test('取消订阅后不再接收数据', async () => {
-    const stream = new Stream<number>(observer => {
-      observer.next(1)
+    const stream = new Stream<number>(subscriber => {
+      subscriber.next(1)
       setTimeout(() => {
-        observer.next(2)
-        observer.next(3)
+        subscriber.next(2)
+        subscriber.next(3)
       })
     })
     return new Promise<void>(resolve => {
@@ -196,9 +229,9 @@ describe('Stream 异步订阅', () => {
 
   test('转 Promise', async () => {
     const value = 5
-    const stream = new Stream<number>(observer => {
+    const stream = new Stream<number>(subscriber => {
       setTimeout(() => {
-        observer.next(value)
+        subscriber.next(value)
       })
     })
 
@@ -209,9 +242,9 @@ describe('Stream 异步订阅', () => {
 
   test('转 Promise 捕获异常', async () => {
     const err = new Error()
-    const stream = new Stream<number>(observer => {
+    const stream = new Stream<number>(subscriber => {
       setTimeout(() => {
-        observer.error(err)
+        subscriber.error(err)
       })
     })
 

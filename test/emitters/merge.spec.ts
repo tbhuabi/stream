@@ -73,10 +73,10 @@ describe('merge', () => {
   })
   test('取消订阅后不再接收数据', done => {
     const arr = []
-    const unsub = merge(new Stream(observer => {
+    const unsub = merge(new Stream(subscriber => {
       setTimeout(() => {
-        observer.next(1)
-        observer.next(2)
+        subscriber.next(1)
+        subscriber.next(2)
       })
     })).subscribe(value => {
       arr.push(value)

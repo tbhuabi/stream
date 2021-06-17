@@ -20,9 +20,9 @@ describe('zip', () => {
   })
   test('有任意数据流完成且未发送数据立即触发完成', done => {
     let value = 1
-    zip(new Stream(observer => {
+    zip(new Stream(subscriber => {
       setTimeout(() => {
-        observer.complete()
+        subscriber.complete()
       })
     }), timeout(10, 2)).subscribe({
       next() {

@@ -1,16 +1,6 @@
 import { Subscriber } from './subscriber';
 import { Subscription } from './subscription';
 
-export interface Observer<T> {
-  next(value: T): void;
-
-  error(err?: Error): void;
-
-  complete(): void;
-
-  onUnsubscribe?(callback: () => void);
-}
-
 export interface Operator<T, U> {
   (stream: Stream<T>): Stream<U>;
 }
@@ -98,16 +88,25 @@ export class Stream<T> {
   }
 
   protected trySubscribe(subscriber: Subscriber<T>) {
-    const unsubscription = this.source(subscriber);
-    if (typeof unsubscription === 'function') {
+    let s: Subscription | (() => void) | void;
+    try {
+      s = this.source(subscriber)
+    } catch (e) {
+      if (subscriber.syncErrorThrowable) {
+        subscriber.error(e);
+      } else {
+        throw e;
+      }
+    }
+    if (typeof s === 'function') {
       return new Subscription(function () {
         subscriber.closed = true;
-        unsubscription()
+        (s as () => void)()
       });
-    } else if (unsubscription instanceof Subscription) {
+    } else if (s instanceof Subscription) {
       return new Subscription(function () {
         subscriber.closed = true;
-        unsubscription.unsubscribe();
+        (s as Subscription).unsubscribe();
       })
     }
     return new Subscription(function () {

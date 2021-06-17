@@ -42,13 +42,12 @@ export function concat<T>(...inputs: Stream<T>[]): Operator<T, T> {
             toNext();
           }
         })
-        return function () {
-          isUnsubscribe = true;
-          sub.unsubscribe()
-        }
       }
-
       toNext();
+      return function () {
+        isUnsubscribe = true;
+        sub.unsubscribe()
+      }
     })
   }
 }
