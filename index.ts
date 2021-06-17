@@ -13,11 +13,11 @@ import {
 
 
 new Stream(subscriber => {
-  setTimeout(() => {
-    subscriber.error(333)
-  })
-}).pipe(delay(30000)).subscribe({
-  error() {
-    console.log(['fdsafdas'])
-  }
+  subscriber.next(333)
+  // subscriber.error('444')
+}).pipe(delay(2000)).subscribe({
+  next(value) {
+    console.log(value)
+  },
+  error(){}
 })

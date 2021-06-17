@@ -19,9 +19,11 @@ export class Subscriber<T> {
     if (this.closed) {
       return;
     }
-    this.syncErrorThrowable = false;
-    this.destinationOrNext.next(value);
-    this.syncErrorThrowable = true;
+    if (this.destinationOrNext.next) {
+      this.syncErrorThrowable = false;
+      this.destinationOrNext.next(value);
+      this.syncErrorThrowable = true;
+    }
   }
 
   error(err: any) {
