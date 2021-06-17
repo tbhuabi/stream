@@ -1,4 +1,4 @@
-import { Stream, Subscriber } from '../core/_api';
+import { Observable, Subscriber } from '../core/_api';
 
 /**
  * 绑定 DOM 事件，并转换为数据流
@@ -14,7 +14,7 @@ export function fromEvent<T extends Event>(element: Element, type: string) {
     })
   }
 
-  return new Stream<T>(subscriber => {
+  return new Observable<T>(subscriber => {
     if (subscribers.length === 0) {
       element.addEventListener(type, listenFn);
     }

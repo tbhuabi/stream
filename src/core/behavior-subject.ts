@@ -1,4 +1,4 @@
-import { PartialObserver } from './stream';
+import { PartialObserver } from './observable';
 import { Subject } from './subject';
 import { Subscription } from './subscription'
 

@@ -1,6 +1,6 @@
 import {
   map,
-  Stream,
+  Observable,
   Subject,
   BehaviorSubject,
   interval,
@@ -12,7 +12,7 @@ import {
 } from './src/public-api'
 
 
-new Stream(subscriber => {
+new Observable(subscriber => {
   subscriber.next(333)
   // subscriber.error('444')
 }).pipe(delay(2000)).subscribe({

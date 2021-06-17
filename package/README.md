@@ -14,11 +14,11 @@ npm install @tanbo/stream
 最基础的数据流类，每一次订阅产生一个新的数据流。
 
 ```ts
-import { Stream } from '@tanbo/stream';
+import { Observable } from '@tanbo/stream';
 
-const stream = new Stream(observer => {
-  observer.next(1);
-  observer.next(2);
+const stream = new Observable(subscriber => {
+  subscriber.next(1);
+  subscriber.next(2);
 })
 
 stream.subscribe(value => {
@@ -71,12 +71,12 @@ behaviorSubject.next(2);
 
 ### 取消订阅
 
-`Stream`、`Subject`、`BehaviorSubject` 类都可以通过同样的方法取消订阅。以 Stream 为例：
+`Observable`、`Subject`、`BehaviorSubject` 类都可以通过同样的方法取消订阅。以 Observable 为例：
 
 ```ts
-const stream = new Stream(observer => {
+const stream = new Observable(subscriber => {
   setTimeout(() => {
-    observer.next(1);
+    subscriber.next(1);
   }, 1000)
 })
 
@@ -90,7 +90,7 @@ subscription.unsubscribe();
 
 ## 数据流发射器
 
-所有的数据流发射器都返回一个 Stream 实例。
+所有的数据流发射器都返回一个 Observable 实例。
 
 ### fromEvent
 
@@ -350,8 +350,8 @@ of('A', 'B', 'C', 'D').pipe(skip(2)).subscribe(value => {
 
 ```ts
 of(1).pipe(switchMap(value => {
-  return new Stream(observer => {
-    observer.next(value + 1)
+  return new Observable(subscriber => {
+    subscriber.next(value + 1)
   })
 })).subscribe(value => {
   console.log(value)

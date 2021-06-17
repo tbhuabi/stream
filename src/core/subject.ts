@@ -1,7 +1,7 @@
-import { Stream } from './stream';
+import { Observable } from './observable';
 import { Subscriber } from './subscriber';
 
-export class Subject<T> extends Stream<T> {
+export class Subject<T> extends Observable<T> {
   private subscribers: Subscriber<T>[] = [];
 
   constructor() {

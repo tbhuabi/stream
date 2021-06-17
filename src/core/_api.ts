@@ -1,5 +1,5 @@
 export * from './behavior-subject';
-export * from './stream';
+export * from './observable';
 export * from './subject';
 export * from './subscriber';
 export * from './subscription';

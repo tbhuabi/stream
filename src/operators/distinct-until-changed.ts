@@ -1,12 +1,12 @@
-import { Operator, Stream } from '../core/_api';
+import { Operator, Observable } from '../core/_api';
 
 /**
  * 过滤连续重复的值
  */
 export function distinctUntilChanged<T>(): Operator<T, T> {
-  return function (source: Stream<T>) {
+  return function (source: Observable<T>) {
     let lastValue: any = {};
-    return new Stream<T>(subscriber => {
+    return new Observable<T>(subscriber => {
       return source.subscribe({
         next(value: T) {
           if (value !== lastValue) {

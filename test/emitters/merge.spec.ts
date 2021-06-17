@@ -1,4 +1,4 @@
-import { fromPromise, merge, of, Stream } from '@tanbo/stream';
+import { fromPromise, merge, of, Observable } from '@tanbo/stream';
 
 describe('merge', () => {
   test('发送每一个数据', done => {
@@ -30,7 +30,7 @@ describe('merge', () => {
   })
   test('所有结束才触发结束', done => {
     const arr = []
-    merge(of(0), of(1), new Stream(observer => {
+    merge(of(0), of(1), new Observable(observer => {
       setTimeout(() => {
         observer.next(2)
         observer.complete()
@@ -55,7 +55,7 @@ describe('merge', () => {
           })
         })
       ),
-      new Stream(observer => {
+      new Observable(observer => {
         setTimeout(() => {
           observer.error(new Error())
           observer.complete()
@@ -73,7 +73,7 @@ describe('merge', () => {
   })
   test('取消订阅后不再接收数据', done => {
     const arr = []
-    const unsub = merge(new Stream(subscriber => {
+    const unsub = merge(new Observable(subscriber => {
       setTimeout(() => {
         subscriber.next(1)
         subscriber.next(2)

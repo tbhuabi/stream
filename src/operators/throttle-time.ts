@@ -1,12 +1,12 @@
-import { Stream, Operator } from '../core/_api'
+import { Observable, Operator } from '../core/_api'
 
 /**
  * 发出最先到达的值，并忽略一段时间内的新值，然后再发送时间到达之后最新到达的值
  * @param time
  */
 export function throttleTime<T>(time: number): Operator<T, T> {
-  return function (source: Stream<T>) {
-    return new Stream<T>(subscriber => {
+  return function (source: Observable<T>) {
+    return new Observable<T>(subscriber => {
       let canPublish = true
       let timer: any;
       const sub = source.subscribe({

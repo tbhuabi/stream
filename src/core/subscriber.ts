@@ -1,4 +1,4 @@
-import { PartialObserver } from './stream';
+import { PartialObserver } from './observable';
 
 export class Subscriber<T> {
   closed = false

@@ -1,12 +1,12 @@
-import { Stream, Operator } from '../core/_api'
+import { Observable, Operator } from '../core/_api'
 
 /**
  * 将源数据流延迟一段时间再发送
  * @param time
  */
 export function delay<T>(time = 0): Operator<T, T> {
-  return function (source: Stream<T>) {
-    return new Stream<T>(subscriber => {
+  return function (source: Observable<T>) {
+    return new Observable<T>(subscriber => {
       let timers: any[] = [];
       let isComplete = false;
       const sub = source.subscribe({

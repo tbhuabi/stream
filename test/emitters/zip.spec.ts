@@ -1,4 +1,4 @@
-import { interval, of, Stream, timeout, zip } from '@tanbo/stream';
+import { interval, of, Observable, timeout, zip } from '@tanbo/stream';
 
 describe('zip', () => {
   test('拼装数据', () => {
@@ -20,7 +20,7 @@ describe('zip', () => {
   })
   test('有任意数据流完成且未发送数据立即触发完成', done => {
     let value = 1
-    zip(new Stream(subscriber => {
+    zip(new Observable(subscriber => {
       setTimeout(() => {
         subscriber.complete()
       })

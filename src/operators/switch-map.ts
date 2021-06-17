@@ -1,12 +1,12 @@
-import { Stream, Operator, PartialObserver } from '../core/_api'
+import { Observable, Operator, PartialObserver } from '../core/_api'
 
 /**
  * 返回一个新的数据流，并以新数据流的订阅结果，发送出去
  * @param handle
  */
-export function switchMap<T, U>(handle: (value: T) => Stream<U>): Operator<T, U> {
-  return function (source: Stream<T>) {
-    return new Stream<U>(subscriber => {
+export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T, U> {
+  return function (source: Observable<T>) {
+    return new Observable<U>(subscriber => {
       const obs: PartialObserver<T> = {
         next(value: T) {
           handle(value).subscribe(value2 => {
