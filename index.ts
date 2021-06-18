@@ -12,12 +12,6 @@ import {
 } from './src/public-api'
 
 
-new Observable(subscriber => {
-  subscriber.next(333)
-  // subscriber.error('444')
-}).pipe(delay(2000)).subscribe({
-  next(value) {
-    console.log(value)
-  },
-  error(){}
+interval(1000, 2).subscribe(value => {
+  console.log(value)
 })

@@ -30,16 +30,4 @@ describe('interval', () => {
       }
     })
   })
-
-  test('自定义起始值值', done => {
-    const arr: number[] = []
-    const unsub = interval(0, 2).subscribe(value => {
-      arr.push(value);
-      if (value === 5) {
-        unsub.unsubscribe();
-        expect(arr).toEqual([2, 3, 4, 5])
-        done()
-      }
-    })
-  })
 })
