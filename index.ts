@@ -12,6 +12,19 @@ import {
 } from './src/public-api'
 
 
-interval(1000, 2).subscribe(value => {
-  console.log(value)
+const arr = []
+
+of(1, 2, 3).pipe(
+  switchMap(value => {
+    return new Observable(subscriber => {
+      subscriber.next(value + 1)
+    })
+  })
+).subscribe({
+  next(value) {
+    arr.push(value)
+  },
+  complete() {
+    console.log(arr)
+  }
 })

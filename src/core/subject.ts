@@ -11,11 +11,15 @@ export class Subject<T> extends Observable<T> {
   }
 
   next(newValue: T) {
-    [...this.subscribers].forEach(observer => {
+    [...this.subscribers].forEach(subscriber => {
       try {
-        observer.next(newValue);
+        subscriber.next(newValue);
       } catch (e) {
-        observer.error(e);
+        if (subscriber.syncErrorThrowable) {
+          subscriber.error(e);
+        } else {
+          throw e;
+        }
       }
     })
   }

@@ -20,12 +20,10 @@ export function skip<T>(count: number): Operator<T, T> {
           subscriber.error(err);
         },
         complete() {
-          sub.unsubscribe();
           subscriber.complete();
         }
       }
-      const sub = source.subscribe(subscribe);
-      return sub;
+      return source.subscribe(subscribe);
     })
   }
 }

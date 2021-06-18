@@ -14,9 +14,6 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
           }, function (err) {
             obs.error(err)
           }, function () {
-            if (sub) {
-              sub.unsubscribe();
-            }
             obs.complete()
           })
         },
@@ -27,8 +24,7 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
           subscriber.complete();
         }
       }
-      const sub = source.subscribe(obs);
-      return sub;
+      return source.subscribe(obs);
     })
   }
 }
