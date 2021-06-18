@@ -9,7 +9,7 @@ npm install @tanbo/stream
 
 ## 核心类
 
-### Stream
+### Observable
 
 最基础的数据流类，每一次订阅产生一个新的数据流。
 
