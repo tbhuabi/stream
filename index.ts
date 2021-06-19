@@ -14,17 +14,16 @@ import {
 
 const arr = []
 
-of(1, 2, 3).pipe(
-  switchMap(value => {
-    return new Observable(subscriber => {
-      subscriber.next(value + 1)
-    })
-  })
-).subscribe({
+interval().pipe(map(i => {
+  if (i === 2) {
+    throw new Error('map')
+  }
+  return i + 1
+})).subscribe({
   next(value) {
-    arr.push(value)
+    console.log(value);
   },
-  complete() {
-    console.log(arr)
+  error(err) {
+    console.log(err)
   }
 })
