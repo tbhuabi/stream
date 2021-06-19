@@ -47,7 +47,23 @@ export class Observable<T> {
       return this;
     }
     return operators.reduce((stream, nextOperator) => {
-      return nextOperator(stream)
+      return nextOperator(new Observable(subscriber => {
+        stream.subscribe({
+          next(value) {
+            try {
+              subscriber.next(value);
+            } catch (e) {
+              subscriber.error(e);
+            }
+          },
+          error(err) {
+            subscriber.error(err)
+          },
+          complete() {
+            subscriber.complete()
+          }
+        })
+      }))
     }, this)
   }
 
