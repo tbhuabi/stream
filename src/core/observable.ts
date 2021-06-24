@@ -68,7 +68,7 @@ export class Observable<T> {
   }
 
   subscribe(observer?: PartialObserver<T>): Subscription;
-  subscribe(observer?: ((value: T) => void), error?: (err: any) => void, complete?: () => void): Subscription;
+  subscribe(observer?: ((value: T) => void) | null, error?: ((err: any) => void) | null, complete?: (() => void) | null): Subscription;
   subscribe(
     observer: any = function () {
       //
