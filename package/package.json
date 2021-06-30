@@ -2,9 +2,9 @@
   "name": "@tanbo/stream",
   "version": "0.0.9",
   "description": "A data stream lib",
-  "main": "./public-api.js",
-  "module": "./public-api.js",
-  "typings": "./public-api.d.ts",
+  "main": "./bundles/umd/public-api.js",
+  "module": "./bundles/esm/public-api.js",
+  "typings": "./bundles/esm/public-api.d.ts",
   "license": "MIT",
   "author": {
     "name": "tanbo",
