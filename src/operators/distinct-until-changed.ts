@@ -5,9 +5,9 @@ import { Operator, Observable } from '../core/_api';
  */
 export function distinctUntilChanged<T>(comparator?: (previous: T, current: T) => boolean): Operator<T, T> {
   return function (source: Observable<T>) {
-    let lastValue: any = {};
-    let isFirst = true
     return new Observable<T>(subscriber => {
+      let lastValue: any = {};
+      let isFirst = true
       return source.subscribe({
         next(value: T) {
           if (isFirst) {

@@ -6,8 +6,8 @@ import { Operator, PartialObserver, Observable } from '../core/_api';
  */
 export function skip<T>(count: number): Operator<T, T> {
   return function (source: Observable<T>) {
-    let i = 0;
     return new Observable<T>(subscriber => {
+      let i = 0;
       const subscribe: PartialObserver<T> = {
         next(value) {
           if (i < count) {
