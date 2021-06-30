@@ -15,7 +15,7 @@
     "downlevelIteration": true,
     "esModuleInterop": true,
     "baseUrl": "./",
-    "outDir": "package/bundles/",
+    "outDir": "package/",
     "paths": {
       "@tanbo/stream": [
         "src/public-api.ts"
@@ -26,6 +26,6 @@
     }
   },
   "include": [
-    "src/public-api.ts"
+    "src/*"
   ]
 }
