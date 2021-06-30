@@ -67,7 +67,18 @@ export class Observable<T> {
     }, this)
   }
 
-  subscribe(observer?: PartialObserver<T> | ((value: T) => void)): Subscription {
+  asObservable(): Observable<T> {
+    return new Observable<T>(subscriber => {
+      this.subscribe(subscriber);
+    })
+  }
+
+  subscribe(observer?: PartialObserver<T>): Subscription;
+  subscribe(observer?: ((value: T) => void)): Subscription;
+  subscribe(
+    observer: any = function () {
+      //
+    }): Subscription {
 
     const subscriber = this.toSubscriber(observer);
 
@@ -80,14 +91,14 @@ export class Observable<T> {
         next(value) {
           resolve(value)
         },
-        error(err: any) {
+        error(err) {
           reject(err)
         }
       });
     })
   }
 
-  protected toSubscriber(observer?: PartialObserver<T> | ((value: T) => void)): Subscriber<T> {
+  protected toSubscriber(observer: PartialObserver<T> | ((value: T) => void)): Subscriber<T> {
     if (typeof observer === 'function') {
       return new Subscriber<T>({
         next: observer

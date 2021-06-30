@@ -34,7 +34,7 @@ export function race<T>(...inputs: Observable<T>[]): Observable<T> {
             subscriber.complete();
           }
         },
-        error(err: any) {
+        error(err) {
           if (canPublish) {
             subscriber.error(err);
           }

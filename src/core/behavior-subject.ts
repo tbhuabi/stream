@@ -15,7 +15,12 @@ export class BehaviorSubject<T> extends Subject<T> {
     super.next(newValue);
   }
 
-  subscribe(observer?: PartialObserver<T> | ((value: T) => void)): Subscription {
+  subscribe(observer?: PartialObserver<T>): Subscription;
+  subscribe(observer?: (value: T) => void): Subscription;
+  subscribe(
+    observer: any = function () {
+      //
+    }): Subscription {
     const subscriber = this.toSubscriber(observer);
     const subscription = this.trySubscribe(subscriber);
     subscriber.next(this.currentValue);
