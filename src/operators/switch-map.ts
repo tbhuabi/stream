@@ -13,12 +13,16 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
           if (prev) {
             prev.unsubscribe();
           }
-          prev = handle(value).subscribe(value2 => {
-            subscriber.next(value2);
-          }, function (err) {
-            obs.error(err)
-          }, function () {
-            obs.complete()
+          prev = handle(value).subscribe({
+            next(value2) {
+              subscriber.next(value2)
+            },
+            error(err) {
+              obs.error(err)
+            },
+            complete() {
+              obs.complete()
+            }
           })
         },
         error(err?: Error) {

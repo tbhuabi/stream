@@ -26,19 +26,23 @@ export function race<T>(...inputs: Observable<T>[]): Observable<T> {
       if (!canPublish) {
         break;
       }
-      subs.push(input.subscribe(value => {
-        if (canPublish) {
-          canPublish = false;
-          subscriber.next(value);
+      subs.push(input.subscribe({
+        next(value) {
+          if (canPublish) {
+            canPublish = false;
+            subscriber.next(value);
+            subscriber.complete();
+          }
+        },
+        error(err: any) {
+          if (canPublish) {
+            subscriber.error(err);
+          }
+        },
+        complete() {
+          subs.forEach(i => i.unsubscribe());
           subscriber.complete();
         }
-      }, function (err) {
-        if (canPublish) {
-          subscriber.error(err);
-        }
-      }, function () {
-        subs.forEach(i => i.unsubscribe());
-        subscriber.complete();
       }))
     }
     return function () {

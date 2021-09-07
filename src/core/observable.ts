@@ -67,37 +67,30 @@ export class Observable<T> {
     }, this)
   }
 
-  subscribe(observer?: PartialObserver<T>): Subscription;
-  subscribe(observer?: ((value: T) => void) | null, error?: ((err: any) => void) | null, complete?: (() => void) | null): Subscription;
-  subscribe(
-    observer: any = function () {
-      //
-    },
-    error?: any,
-    complete?: any): Subscription {
+  subscribe(observer?: PartialObserver<T> | ((value: T) => void)): Subscription {
 
-    const subscriber = this.toSubscriber(observer, error, complete);
+    const subscriber = this.toSubscriber(observer);
 
     return this.trySubscribe(subscriber);
   }
 
   toPromise(): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-      this.subscribe(value => resolve(value), err => reject(err));
+      this.subscribe({
+        next(value) {
+          resolve(value)
+        },
+        error(err: any) {
+          reject(err)
+        }
+      });
     })
   }
 
-  protected toSubscriber(observer?: PartialObserver<T>): Subscriber<T>;
-  protected toSubscriber(observer?: ((value: T) => void), error?: (err: any) => void, complete?: () => void): Subscriber<T>;
-  protected toSubscriber(
-    observer: any,
-    error?: any,
-    complete?: any) {
+  protected toSubscriber(observer?: PartialObserver<T> | ((value: T) => void)): Subscriber<T> {
     if (typeof observer === 'function') {
       return new Subscriber<T>({
-        next: observer,
-        error,
-        complete
+        next: observer
       })
     }
     return new Subscriber<T>(observer);

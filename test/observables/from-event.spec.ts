@@ -25,7 +25,7 @@ describe('fromEvent', () => {
   })
   test('取消订阅事件', done => {
     const button = document.getElementById('button')
-    let arr = []
+    const arr = []
 
     const unsub = fromEvent(button, 'click').subscribe(event => {
       arr.push(event)
@@ -40,8 +40,8 @@ describe('fromEvent', () => {
   })
   test('多个订阅事件获取相同的事件对象', done => {
     const button = document.getElementById('button')
-    let arr = []
-    let arr2 = []
+    const arr = []
+    const arr2 = []
 
     const stream = fromEvent(button, 'click')
     stream.subscribe(event => {
@@ -59,8 +59,8 @@ describe('fromEvent', () => {
   })
   test('多个订阅事件互不干扰', done => {
     const button = document.getElementById('button')
-    let arr = []
-    let arr2 = []
+    const arr = []
+    const arr2 = []
 
     const stream = fromEvent(button, 'click')
     const unsub = stream.subscribe(event => {

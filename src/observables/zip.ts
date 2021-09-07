@@ -30,23 +30,27 @@ export function zip<T>(...inputs: Observable<T>[]): Observable<T[]> {
 
     let isPublished = false;
     const subs = marks.map(config => {
-      return config.source.subscribe(value => {
-        config.value = value;
-        config.hasMessage = true;
-        if (marks.every(o => o.hasMessage)) {
-          isPublished = true;
-          if (subs) {
-            subs.forEach(i => i.unsubscribe());
+      return config.source.subscribe({
+        next(value) {
+          config.value = value;
+          config.hasMessage = true;
+          if (marks.every(o => o.hasMessage)) {
+            isPublished = true;
+            if (subs) {
+              subs.forEach(i => i.unsubscribe());
+            }
+            subscriber.next(marks.map(j => j.value));
+            subscriber.complete()
           }
-          subscriber.next(marks.map(j => j.value));
-          subscriber.complete()
-        }
-      }, function (err) {
-        subscriber.error(err);
-      }, function () {
-        if (subs && !config.hasMessage) {
-          subs.forEach(i => i.unsubscribe());
-          subscriber.complete();
+        },
+        error(err) {
+          subscriber.error(err);
+        },
+        complete() {
+          if (subs && !config.hasMessage) {
+            subs.forEach(i => i.unsubscribe());
+            subscriber.complete();
+          }
         }
       })
     })
