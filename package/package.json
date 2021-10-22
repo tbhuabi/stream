@@ -1,6 +1,6 @@
 {
   "name": "@tanbo/stream",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A data stream lib",
   "main": "./public-api.js",
   "module": "./public-api.js",
