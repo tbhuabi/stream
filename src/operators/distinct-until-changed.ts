@@ -3,13 +3,25 @@ import { Operator, Observable } from '../core/_api';
 /**
  * 过滤连续重复的值
  */
-export function distinctUntilChanged<T>(): Operator<T, T> {
+export function distinctUntilChanged<T>(comparator?: (previous: T, current: T) => boolean): Operator<T, T> {
   return function (source: Observable<T>) {
     let lastValue: any = {};
+    let isFirst = true
     return new Observable<T>(subscriber => {
       return source.subscribe({
         next(value: T) {
-          if (value !== lastValue) {
+          if (isFirst) {
+            isFirst = false
+            lastValue = value
+            subscriber.next(value)
+            return
+          }
+          if (comparator) {
+            const b = comparator(lastValue, value)
+            if (!b) {
+              subscriber.next(value)
+            }
+          } else if (value !== lastValue) {
             lastValue = value;
             subscriber.next(value)
           }
