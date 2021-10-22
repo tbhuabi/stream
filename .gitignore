@@ -1,7 +1,7 @@
 .idea
 node_modules/
 package/core
-package/emitters
+package/observables
 package/operators
 package/public-api.d.ts
 package/public-api.js
