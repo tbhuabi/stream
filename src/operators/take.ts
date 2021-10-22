@@ -14,11 +14,11 @@ export function take<T>(count: number): Operator<T, T> {
             subscriber.next(value);
             i++;
             if (i === count) {
-              obs.complete();
+              subscriber.complete();
             }
             return;
           }
-          obs.complete();
+          subscriber.complete();
         },
         error(err) {
           subscriber.error(err);

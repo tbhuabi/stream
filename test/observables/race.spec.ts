@@ -9,7 +9,7 @@ describe('race', () => {
     })
   })
   test('只发送一个值', done => {
-    const arr = []
+    const arr: any[] = []
     race(of(1, 2)).subscribe({
       next(v) {
         arr.push(v)
@@ -22,7 +22,7 @@ describe('race', () => {
   })
 
   test('取消订阅后不再发送', done => {
-    const arr = []
+    const arr: any[] = []
     const sub = race(timeout(1)).subscribe(value => {
       arr.push(value)
     })

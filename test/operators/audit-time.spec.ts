@@ -27,7 +27,7 @@ describe('auditTime', () => {
   })
 
   test('间隔单位时间发送最新值', done => {
-    const arr = []
+    const arr: any[] = []
     const sub = interval(10).pipe(auditTime(20)).subscribe({
       next(v) {
         arr.push(v);

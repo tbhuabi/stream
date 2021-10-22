@@ -14,7 +14,7 @@ export function zip<T1, T2, T3, T4, T5, T6, T7, T8>(s1: Observable<T1>, s2: Obse
 export function zip<T1, T2, T3, T4, T5, T6, T7, T8, T9>(s1: Observable<T1>, s2: Observable<T2>, s3: Observable<T3>, s4: Observable<T4>, s5: Observable<T5>, s6: Observable<T6>, s7: Observable<T7>, s8: Observable<T8>, s9: Observable<T9>): Observable<[T1, T2, T3, T4, T5, T6, T7, T8, T9]>;
 export function zip<T>(...inputs: Observable<T>[]): Observable<T[]>;
 export function zip(...inputs: Observable<any>[]): Observable<any[]>;
-export function zip<T>(...inputs: Observable<T>[]): Observable<T[]> {
+export function zip<T>(...inputs: Observable<T>[]): any {
   return new Observable<T[]>(subscriber => {
     if (inputs.length === 0) {
       subscriber.complete();
@@ -24,7 +24,7 @@ export function zip<T>(...inputs: Observable<T>[]): Observable<T[]> {
       return {
         source: i,
         hasMessage: false,
-        value: null
+        value: null as any
       }
     });
 

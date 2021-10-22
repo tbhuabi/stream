@@ -2,7 +2,7 @@ import { fromPromise, merge, of, Observable } from '@tanbo/stream';
 
 describe('merge', () => {
   test('发送每一个数据', done => {
-    const arr = []
+    const arr: any[] = []
     merge(fromPromise(Promise.resolve().then(() => 0)), of(1, 2)).subscribe({
       next(value) {
         arr.push(value)
@@ -29,7 +29,7 @@ describe('merge', () => {
     })
   })
   test('所有结束才触发结束', done => {
-    const arr = []
+    const arr: any[]= []
     merge(of(0), of(1), new Observable(observer => {
       setTimeout(() => {
         observer.next(2)
@@ -46,7 +46,7 @@ describe('merge', () => {
     })
   })
   test('只触发一次异常', done => {
-    const arr = []
+    const arr: any[] = []
     merge(
       fromPromise(
         new Promise((_, reject) => {
@@ -72,7 +72,7 @@ describe('merge', () => {
     }, 10)
   })
   test('取消订阅后不再接收数据', done => {
-    const arr = []
+    const arr: any[] = []
     const unsub = merge(new Observable(subscriber => {
       setTimeout(() => {
         subscriber.next(1)

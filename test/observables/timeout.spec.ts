@@ -2,7 +2,7 @@ import { timeout } from '@tanbo/stream';
 
 describe('timeout', () => {
   test('只发送一个值且立即结束', done => {
-    const arr = []
+    const arr: any[] = []
     timeout(1).subscribe({
       next() {
         arr.push(1)
@@ -14,7 +14,7 @@ describe('timeout', () => {
     })
   })
   test('取消订阅后不再发送', done => {
-    const arr = []
+    const arr: any[] = []
     const sub = timeout(1, 1).subscribe({
       next(v) {
         arr.push(v)

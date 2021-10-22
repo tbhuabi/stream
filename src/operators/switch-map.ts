@@ -18,10 +18,10 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
               subscriber.next(value2)
             },
             error(err) {
-              obs.error(err)
+              subscriber.error(err)
             },
             complete() {
-              obs.complete()
+              subscriber.complete()
             }
           })
         },

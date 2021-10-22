@@ -8,6 +8,7 @@
       "es2018",
       "dom"
     ],
+    "strict": true,
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "downlevelIteration": true,

@@ -23,7 +23,7 @@ export function concat<T>(...inputs: Observable<T>[]): Operator<T, T> {
       let isUnsubscribe = false;
 
       function toNext() {
-        const stream = streams.shift();
+        const stream = streams.shift()!;
         sub = stream.subscribe({
           next(value: T) {
             subscriber.next(value)

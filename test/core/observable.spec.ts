@@ -211,7 +211,7 @@ describe('Stream 异步订阅', () => {
       })
     })
     return new Promise<void>(resolve => {
-      let i = null;
+      let i: any = null;
       const unsub = stream.subscribe({
         next(value) {
           i = value

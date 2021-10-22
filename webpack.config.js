@@ -30,18 +30,19 @@ module.exports = {
   },
   module: {
     rules: [
-    //   {
-    //   test: /\.ts$/,
-    //   enforce: 'pre',
-    //   exclude: /node_modules/,
-    //   loader: [{
-    //     loader: 'eslint-loader'
-    //   }]
-    // },
+      //   {
+      //   test: /\.ts$/,
+      //   enforce: 'pre',
+      //   exclude: /node_modules/,
+      //   loader: [{
+      //     loader: 'eslint-loader'
+      //   }]
+      // },
       {
-      test: /\.ts$/,
-      loader: ['ts-loader']
-    }]
+        test: /\.ts$/,
+        use: ['ts-loader'],
+      }
+    ]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

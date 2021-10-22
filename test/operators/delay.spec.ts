@@ -2,7 +2,7 @@ import { delay, of } from '@tanbo/stream';
 
 describe('delay', () => {
   test('确保数据流延迟', done => {
-    const arr = []
+    const arr: any[] = []
     const sub = of(1, 2, 3).pipe(delay(200)).subscribe(value => {
       arr.push(value)
     })
@@ -13,7 +13,7 @@ describe('delay', () => {
     }, 190)
   })
   test('确保延迟收到数据流', done => {
-    const arr = []
+    const arr: any[] = []
     const sub = of(1, 2, 3).pipe(delay(200)).subscribe(value => {
       arr.push(value)
     })

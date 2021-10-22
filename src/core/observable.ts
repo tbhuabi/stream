@@ -46,7 +46,7 @@ export class Observable<T> {
     if (operators.length === 0) {
       return this;
     }
-    return operators.reduce((stream, nextOperator) => {
+    return operators.reduce<Observable<any>>((stream, nextOperator) => {
       return nextOperator(new Observable(subscriber => {
         stream.subscribe({
           next(value) {

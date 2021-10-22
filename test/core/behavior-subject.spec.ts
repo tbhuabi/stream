@@ -16,7 +16,7 @@ describe('BehaviorSubject 同步订阅', () => {
   })
   test('可以获取到后发布的值', () => {
     const subject = new BehaviorSubject(5);
-    let value: number
+    let value!: number
     subject.subscribe(v => {
       value = v
     })
@@ -26,7 +26,7 @@ describe('BehaviorSubject 同步订阅', () => {
   test('取消订阅后，不再得到通知', () => {
     const subject = new BehaviorSubject(5);
     subject.next(6)
-    let v: number
+    let v!: number
     subject.subscribe(value => {
       v = value
     }).unsubscribe()
