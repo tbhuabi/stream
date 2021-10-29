@@ -10,6 +10,12 @@ export class Subject<T> extends Observable<T> {
     })
   }
 
+  asObservable(): Observable<T> {
+    return new Observable<T>(subscriber => {
+      this.subscribe(subscriber);
+    })
+  }
+
   next(newValue: T) {
     [...this.subscribers].forEach(subscriber => {
       try {

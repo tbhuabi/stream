@@ -7,7 +7,7 @@ import { Observable, Operator } from '../core/_api'
 export function delay<T>(time = 0): Operator<T, T> {
   return function (source: Observable<T>) {
     return new Observable<T>(subscriber => {
-      let timers: any[] = [];
+      const timers: any[] = [];
       let isComplete = false;
       const sub = source.subscribe({
         next(v: T) {

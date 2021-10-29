@@ -67,12 +67,6 @@ export class Observable<T> {
     }, this)
   }
 
-  asObservable(): Observable<T> {
-    return new Observable<T>(subscriber => {
-      this.subscribe(subscriber);
-    })
-  }
-
   subscribe(observer?: PartialObserver<T>): Subscription;
   subscribe(observer?: ((value: T) => void)): Subscription;
   subscribe(

@@ -7,7 +7,7 @@ import { Observable } from '../core/_api';
  */
 export function timeout<T>(delay = 1000, data: T = (0 as any)) {
   return new Observable<T>(subscriber => {
-    let timer = setTimeout(function () {
+    const timer = setTimeout(function () {
       subscriber.next(data);
       subscriber.complete();
     }, delay)
