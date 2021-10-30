@@ -26,7 +26,7 @@ export interface CompletionObserver<T> {
 export type PartialObserver<T> = NextObserver<T> | ErrorObserver<T> | CompletionObserver<T>;
 
 export class Observable<T> {
-  constructor(public source: (subscriber: Subscriber<T>) => Subscription | (() => void) | void = observer => {
+  constructor(private source: (subscriber: Subscriber<T>) => Subscription | (() => void) | void = observer => {
     observer.complete();
   }) {
   }

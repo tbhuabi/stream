@@ -18,6 +18,7 @@ export function distinctUntilChanged<T>(comparator?: (previous: T, current: T) =
           }
           if (comparator) {
             const b = comparator(lastValue, value)
+            lastValue = value
             if (!b) {
               subscriber.next(value)
             }
