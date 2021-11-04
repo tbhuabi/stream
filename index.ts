@@ -8,22 +8,16 @@ import {
   auditTime,
   throttleTime,
   switchMap,
-  debounceTime, take, zip, race, of, concat, delay, merge, distinctUntilChanged, timeout
+  debounceTime, take, zip, race, of, concat, delay, merge, distinctUntilChanged, timeout, share
 } from './src/public-api'
 
-
-const arr = []
-
-interval().pipe(map(i => {
-  if (i === 2) {
-    throw new Error('map')
-  }
-  return i + 1
-})).subscribe({
-  next(value) {
-    console.log(value);
-  },
-  error(err) {
-    console.log(err)
-  }
+const sharedObs = interval().pipe(share())
+sharedObs.subscribe(value => {
+  console.log(value)
 })
+
+setTimeout(() => {
+  sharedObs.subscribe(value => {
+    console.log(value)
+  })
+}, 2100)

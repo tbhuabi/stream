@@ -332,6 +332,30 @@ of('张三').pipe(map(value => {
 // 输出： {name: '张三'}
 ```
 
+### share
+
+让多个订阅共享同一个数据源，而不是创建新的
+
+```ts
+const sharedObs = interval().pipe(share())
+sharedObs.subscribe(value => {
+  console.log(value)
+})
+
+setTimeout(() => {
+  sharedObs.subscribe(value => {
+    console.log(value)
+  })
+}, 2100)
+// 输出：
+// 0
+// 1
+// 2
+// 2
+// 3
+// 3
+```
+
 ### skip
 
 跳过指定次数的数据，然后发送后面的值。
