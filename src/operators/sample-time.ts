@@ -1,10 +1,10 @@
 import { Observable, Operator } from '../core/_api'
 
 /**
- * 当有新值时，记录值，并延迟一段时间，发送记录的值
+ * 忽略源值，并延迟一段时间，发送最新的值
  * @param time 要延迟的时间
  */
-export function auditTime<T>(time: number): Operator<T, T> {
+export function sampleTime<T>(time: number): Operator<T, T> {
   return function (source: Observable<T>) {
     return new Observable<T>(subscriber => {
       let canPublish = true
@@ -14,8 +14,8 @@ export function auditTime<T>(time: number): Operator<T, T> {
       let hasError = false
       const sub = source.subscribe({
         next(v: T) {
+          value = v;
           if (canPublish) {
-            value = v;
             canPublish = false;
             timer = setTimeout(() => {
               canPublish = true;

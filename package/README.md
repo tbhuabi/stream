@@ -227,12 +227,12 @@ interval().pipe(
 })
 ```
 
-### auditTime
+### sampleTime
 
 忽略源值，并延迟一段时间，发送最新的值。
 
 ```ts
-interval(1000).pipe(auditTime(2000)).subscribe(value => {
+interval(1000).pipe(sampleTime(2000)).subscribe(value => {
   console.log(value);
 })
 // 输出：

@@ -5,7 +5,7 @@ import {
   BehaviorSubject,
   interval,
   fromEvent,
-  auditTime,
+  sampleTime,
   throttleTime,
   switchMap,
   debounceTime, take, zip, race, of, concat, delay, merge, distinctUntilChanged, timeout, share

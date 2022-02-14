@@ -1,9 +1,9 @@
-import { auditTime, interval, of } from '@tanbo/stream';
+import { sampleTime, interval, of } from '@tanbo/stream';
 
-describe('auditTime', () => {
+describe('sampleTime', () => {
   test('单位时间内只触发一次', done => {
     let count = 0
-    of(1, 2, 3).pipe(auditTime(10)).subscribe({
+    of(1, 2, 3).pipe(sampleTime(10)).subscribe({
       next() {
         count++;
       },
@@ -13,14 +13,14 @@ describe('auditTime', () => {
       }
     })
   })
-  test('获取时间内初始值', done => {
+  test('获取时间内最新值', done => {
     let value: number
-    of(1, 2, 3).pipe(auditTime(10)).subscribe({
+    of(1, 2, 3).pipe(sampleTime(10)).subscribe({
       next(v) {
         value = v;
       },
       complete() {
-        expect(value).toBe(1)
+        expect(value).toBe(3)
         done()
       }
     })
@@ -28,7 +28,7 @@ describe('auditTime', () => {
 
   test('间隔单位时间发送最新值', done => {
     const arr: any[] = []
-    const sub = interval(10).pipe(auditTime(20)).subscribe({
+    const sub = interval(10).pipe(sampleTime(20)).subscribe({
       next(v) {
         arr.push(v);
       }

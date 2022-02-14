@@ -5,6 +5,7 @@ export * from './delay';
 export * from './distinct-until-changed';
 export * from './filter';
 export * from './map';
+export * from './sample-time';
 export * from './share';
 export * from './skip';
 export * from './switch-map';

@@ -229,7 +229,7 @@ interval().pipe(
 
 ### auditTime
 
-忽略源值，并延迟一段时间，发送最新的值。
+当有新值时，记录值，并延迟一段时间，发送记录的值。
 
 ```ts
 interval(1000).pipe(auditTime(2000)).subscribe(value => {
@@ -330,6 +330,21 @@ of('张三').pipe(map(value => {
   console.log(value);
 })
 // 输出： {name: '张三'}
+```
+
+### sampleTime
+
+忽略源值，并延迟一段时间，发送最新的值。
+
+```ts
+interval(1000).pipe(sampleTime(2000)).subscribe(value => {
+  console.log(value);
+})
+// 输出：
+// 3
+// 5
+// 7
+// ...
 ```
 
 ### share
