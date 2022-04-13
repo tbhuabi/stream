@@ -6,27 +6,17 @@ import { Observable, Subscriber } from '../core/_api';
  * @param type 事件名
  */
 export function fromEvent<T extends Event>(source: Element | Window | Document, type: string) {
-  const subscribers: Subscriber<T>[] = [];
+  let cachedSubscriber: Subscriber<T>
 
   function listenFn(event) {
-    return [...subscribers].forEach(subscriber => {
-      subscriber.next(event);
-    })
+    return cachedSubscriber.next(event)
   }
 
   return new Observable<T>(subscriber => {
-    if (subscribers.length === 0) {
-      source.addEventListener(type, listenFn);
-    }
-    subscribers.push(subscriber);
+    cachedSubscriber = subscriber
+    source.addEventListener(type, listenFn);
     return function () {
-      const index = subscribers.indexOf(subscriber);
-      if (index > -1) {
-        subscribers.splice(index, 1);
-      }
-      if (subscribers.length === 0) {
-        source.removeEventListener(type, listenFn);
-      }
+      source.removeEventListener(type, listenFn)
     }
   })
 }

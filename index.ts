@@ -8,16 +8,17 @@ import {
   sampleTime,
   throttleTime,
   switchMap,
-  debounceTime, take, zip, race, of, concat, delay, merge, distinctUntilChanged, timeout, share
+  debounceTime, take, zip, race, of, concat, delay, merge, distinctUntilChanged, timeout, share, microTask
 } from './src/public-api'
 
-const sharedObs = interval().pipe(share())
-sharedObs.subscribe(value => {
-  console.log(value)
+
+of(1, 2, 3, 4).pipe(delay()).subscribe(value => {
+  console.log('宏', value)
 })
 
-setTimeout(() => {
-  sharedObs.subscribe(value => {
-    console.log(value)
-  })
-}, 2100)
+of(1, 2, 3, 4).pipe(microTask()).subscribe(value => {
+  console.log('微：', value)
+})
+of(1, 2, 3, 4).subscribe(value => {
+  console.log('普通', value)
+})

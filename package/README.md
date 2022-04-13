@@ -227,12 +227,12 @@ interval().pipe(
 })
 ```
 
-### sampleTime
+### auditTime
 
-忽略源值，并延迟一段时间，发送最新的值。
+当有新值时，记录值，并延迟一段时间，发送记录的值。
 
 ```ts
-interval(1000).pipe(sampleTime(2000)).subscribe(value => {
+interval(1000).pipe(auditTime(2000)).subscribe(value => {
   console.log(value);
 })
 // 输出：
@@ -330,6 +330,37 @@ of('张三').pipe(map(value => {
   console.log(value);
 })
 // 输出： {name: '张三'}
+```
+
+### microTask
+
+启动一个微任务，将数据缓存起来，并在微任务执行时，把缓存起来的数据一起发送出去。
+
+```ts
+console.log('start')
+of(1, 2, 3, 4).pipe(microTask()).subscribe(values => {
+  console.log(values)
+})
+console.log('end')
+// 输出：
+// start
+// end
+// [1, 2, 3, 4]
+```
+
+### sampleTime
+
+忽略源值，并延迟一段时间，发送最新的值。
+
+```ts
+interval(1000).pipe(sampleTime(2000)).subscribe(value => {
+  console.log(value);
+})
+// 输出：
+// 3
+// 5
+// 7
+// ...
 ```
 
 ### share
