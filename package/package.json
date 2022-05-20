@@ -1,6 +1,6 @@
 {
   "name": "@tanbo/stream",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A data stream lib",
   "main": "./bundles/umd/public-api.js",
   "module": "./bundles/esm/public-api.js",
