@@ -1,5 +1,5 @@
 import { Subscriber } from './subscriber';
-import { Subscription } from './subscription';
+import { noop, Subscription } from './subscription';
 
 export interface Operator<T, U> {
   (source: Observable<T>): Observable<U>;
@@ -56,9 +56,7 @@ export class Observable<T> {
   subscribe(observer?: PartialObserver<T>): Subscription;
   subscribe(observer?: ((value: T) => void)): Subscription;
   subscribe(
-    observer: any = function () {
-      //
-    }): Subscription {
+    observer: any = noop): Subscription {
 
     const subscriber = this.toSubscriber(observer);
 

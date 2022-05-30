@@ -35,9 +35,11 @@ export class Subscriber<T> {
       this.syncErrorThrowable = false;
       this.destinationOrNext.error(err);
       this.syncErrorThrowable = true;
+      this.destinationOrNext = null as any
       return;
     }
     this.syncErrorThrowable = false;
+    this.destinationOrNext = null as any
     throw err;
   }
 
@@ -51,5 +53,6 @@ export class Subscriber<T> {
       this.destinationOrNext.complete();
       this.syncErrorThrowable = true;
     }
+    this.destinationOrNext = null as any
   }
 }

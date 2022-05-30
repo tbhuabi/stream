@@ -42,6 +42,7 @@ describe('fromEvent', () => {
     const button = document.getElementById('button')!
     const arr: any[] = []
     const arr2: any[] = []
+    document.body.append(button)
 
     const stream = fromEvent(button, 'click')
     stream.subscribe(event => {
@@ -50,9 +51,9 @@ describe('fromEvent', () => {
     stream.subscribe(event => {
       arr2.push(event);
     })
+    button.click()
+    button.click()
     setTimeout(() => {
-      button.click()
-      button.click()
       expect(arr).toEqual(arr2)
       done()
     })

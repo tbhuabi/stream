@@ -1,3 +1,7 @@
+export function noop() {
+  //
+}
+
 export class Subscription {
   private subs: Subscription[] = [];
 
@@ -6,17 +10,18 @@ export class Subscription {
   constructor(private unsubscribeCallback?: () => void) {
   }
 
-  add(subscription: Subscription) {
+  add(...subscriptions: Subscription[]) {
     if (this.isStopped) {
       return;
     }
-    this.subs.push(subscription);
+    this.subs.push(...subscriptions);
   }
 
   unsubscribe() {
     this.isStopped = true;
     if (this.unsubscribeCallback) {
       this.unsubscribeCallback();
+      this.unsubscribeCallback = noop
     }
     this.subs.forEach(i => i.unsubscribe());
   }

@@ -35,7 +35,7 @@ describe('auditTime', () => {
     })
     setTimeout(() => {
       sub.unsubscribe()
-      expect(arr).toEqual([1, 3, 5, 7])
+      expect(arr).toEqual([0, 2, 4, 6])
       done()
     }, 110)
   })
