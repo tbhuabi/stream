@@ -12,9 +12,10 @@ export class Subscription {
 
   add(...subscriptions: Subscription[]) {
     if (this.isStopped) {
-      return;
+      return this;
     }
     this.subs.push(...subscriptions);
+    return this
   }
 
   unsubscribe() {
