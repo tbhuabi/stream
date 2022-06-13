@@ -14,7 +14,7 @@ describe('zip', () => {
   })
   test('在所有订阅未完成时更新数据', done => {
     zip(interval(50), timeout(120, 2)).subscribe(value => {
-      expect(value).toEqual([1, 2])
+      expect(value).toEqual([0, 2])
       done()
     })
   })

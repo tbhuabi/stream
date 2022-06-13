@@ -8,17 +8,15 @@ import {
   sampleTime,
   throttleTime,
   switchMap,
-  debounceTime, take, zip, race, of, concat, delay, merge, distinctUntilChanged, timeout, share, microTask
+  debounceTime, take, zip, race, of, throwError, concat, delay, merge, distinctUntilChanged, timeout, share, microTask
 } from './src/public-api'
 
 
-of(1, 2, 3, 4).pipe(delay()).subscribe(value => {
-  console.log('宏', value)
-})
-
-of(1, 2, 3, 4).pipe(microTask()).subscribe(value => {
-  console.log('微：', value)
-})
-of(1, 2, 3, 4).subscribe(value => {
-  console.log('普通', value)
+zip(of('a', 'b', 'c'), of(1, 2, 3), interval(1000)).subscribe({
+  next(value) {
+    console.log(value)
+  },
+  complete() {
+    console.log('complete')
+  }
 })

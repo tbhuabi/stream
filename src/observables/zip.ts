@@ -1,4 +1,4 @@
-import { Observable } from '../core/_api';
+import { Observable, Subscription } from '../core/_api';
 
 /**
  * 监听一组数据流，当所有数据到达时，将最新数据按输入顺序，以一个数组的形式发送并忽略后面的所有数据
@@ -20,42 +20,46 @@ export function zip<T>(...inputs: Observable<T>[]): any {
       subscriber.complete();
       return;
     }
-    const marks = inputs.map(i => {
+    const marks = inputs.map(source => {
       return {
-        source: i,
-        hasMessage: false,
-        value: null as any
+        source,
+        values: [] as T[],
+        isComplete: false
       }
-    });
+    })
+    const subscription = new Subscription()
 
-    let isPublished = false;
-    const subs = marks.map(config => {
-      return config.source.subscribe({
+    function handleComplete() {
+      for (const i of marks) {
+        if (i.isComplete && i.values.length === 0) {
+          subscriber.complete()
+          subscription.unsubscribe()
+          break
+        }
+      }
+    }
+
+    marks.forEach((config) => {
+      subscription.add(config.source.subscribe({
         next(value) {
-          config.value = value;
-          config.hasMessage = true;
-          if (marks.every(o => o.hasMessage)) {
-            isPublished = true;
-            if (subs) {
-              subs.forEach(i => i.unsubscribe());
-            }
-            subscriber.next(marks.map(j => j.value));
-            subscriber.complete()
+          const values = config.values
+          values.push(value)
+          if (marks.every(i => i.values.length)) {
+            subscriber.next(marks.map(item => {
+              return item.values.shift()!
+            }))
+            handleComplete()
           }
         },
-        error(err) {
-          subscriber.error(err);
+        error(err: any) {
+          subscriber.error(err)
         },
         complete() {
-          if (subs && !config.hasMessage) {
-            subs.forEach(i => i.unsubscribe());
-            subscriber.complete();
-          }
+          config.isComplete = true
+          handleComplete()
         }
-      })
+      }))
     })
-    if (isPublished) {
-      subs.forEach(i => i.unsubscribe());
-    }
+    return subscription
   })
 }
