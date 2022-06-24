@@ -8,6 +8,8 @@ export function retry<T>(count: number): Operator<T, T> {
   return function (source: Observable<T>) {
     return new Observable(subscriber => {
       let i = 0
+      let hasError = false
+
       function subscribe() {
         return source.subscribe({
           next(value: T) {
@@ -18,6 +20,7 @@ export function retry<T>(count: number): Operator<T, T> {
               i++
               subscription = subscribe()
             } else {
+              hasError = true
               subscriber.error(err)
             }
           },
@@ -28,6 +31,9 @@ export function retry<T>(count: number): Operator<T, T> {
       }
 
       let subscription = subscribe()
+      if (hasError) {
+        subscription.unsubscribe()
+      }
       return function () {
         subscription.unsubscribe()
       }
