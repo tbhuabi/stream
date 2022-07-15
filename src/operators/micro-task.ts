@@ -28,7 +28,11 @@ export function microTask<T>(): Operator<T, T[]> {
           subscriber.error(err);
         },
         complete() {
-          isComplete = true
+          if (task === null) {
+            subscriber.complete();
+          } else {
+            isComplete = true
+          }
         }
       })
     })

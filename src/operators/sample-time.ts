@@ -8,7 +8,7 @@ export function sampleTime<T>(time: number): Operator<T, T> {
   return function (source: Observable<T>) {
     return new Observable<T>(subscriber => {
       let canPublish = true
-      let timer: any;
+      let timer: any = null;
       let value: T;
       let isComplete = false
       let hasError = false
@@ -19,6 +19,7 @@ export function sampleTime<T>(time: number): Operator<T, T> {
             canPublish = false;
             timer = setTimeout(() => {
               canPublish = true;
+              timer = null
               subscriber.next(value)
               if (isComplete) {
                 subscriber.complete();
@@ -34,7 +35,11 @@ export function sampleTime<T>(time: number): Operator<T, T> {
           subscriber.error(err);
         },
         complete() {
-          isComplete = true
+          if (timer === null) {
+            subscriber.complete();
+          } else {
+            isComplete = true
+          }
         }
       })
       if (hasError) {
