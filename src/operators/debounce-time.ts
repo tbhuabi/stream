@@ -7,22 +7,32 @@ import { Observable, Operator } from '../core/_api'
 export function debounceTime<T>(time: number): Operator<T, T> {
   return function (source: Observable<T>) {
     return new Observable<T>(subscriber => {
-      let timer: any;
+      let timer: any = null;
+      let isComplete = false
       const sub = source.subscribe({
         next(v: T) {
           clearTimeout(timer);
           timer = setTimeout(function () {
+            timer = null
             subscriber.next(v);
+            if (isComplete) {
+              subscriber.complete()
+            }
           }, time);
         },
         error(err?: Error) {
           subscriber.error(err);
         },
         complete() {
-          subscriber.complete();
+          if (timer === null) {
+            subscriber.complete();
+          } else {
+            isComplete = true
+          }
         }
       })
       return function () {
+        timer = null
         clearTimeout(timer);
         sub.unsubscribe()
       }

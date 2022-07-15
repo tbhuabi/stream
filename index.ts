@@ -12,9 +12,14 @@ import {
 } from './src/public-api'
 
 
-zip(of('a', 'b', 'c'), of(1, 2, 3), interval(1000)).subscribe({
-  next(value) {
-    console.log(value)
+// fromEvent(document.getElementById('button')!, 'click')
+interval()
+  .pipe(
+    take(5),
+    debounceTime(1500),
+  ).subscribe({
+  next(v) {
+    console.log(v)
   },
   complete() {
     console.log('complete')
