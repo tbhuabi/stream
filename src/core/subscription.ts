@@ -25,5 +25,6 @@ export class Subscription {
       this.unsubscribeCallback = noop
     }
     this.subs.forEach(i => i.unsubscribe());
+    this.subs = []
   }
 }
