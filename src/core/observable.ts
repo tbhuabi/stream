@@ -48,7 +48,7 @@ export class Observable<T> {
     }
     return operators.reduce<Observable<any>>((stream, nextOperator) => {
       return nextOperator(new Observable(subscriber => {
-        stream.subscribe(subscriber)
+        return stream.subscribe(subscriber)
       }))
     }, this)
   }

@@ -12,16 +12,8 @@ import {
 } from './src/public-api'
 
 
-// fromEvent(document.getElementById('button')!, 'click')
-interval()
-  .pipe(
-    take(5),
-    debounceTime(1500),
-  ).subscribe({
-  next(v) {
-    console.log(v)
-  },
-  complete() {
-    console.log('complete')
-  }
+const obs = fromEvent(document, 'mouseup').pipe(take(1)).subscribe(() => {
+  console.log('----')
+  console.log(obs)
+  obs.unsubscribe()
 })

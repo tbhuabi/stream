@@ -7,15 +7,16 @@ import { Observable, Operator, PartialObserver, Subscription } from '../core/_ap
 export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T, U> {
   return function (source: Observable<T>) {
     return new Observable<U>(subscriber => {
-      let prev: Subscription;
+      const sub = new Subscription()
+      let isComplete = false
       const obs: PartialObserver<T> = {
         next(value: T) {
-          if (prev) {
-            prev.unsubscribe();
-          }
-          prev = handle(value).subscribe({
+          sub.add(handle(value).subscribe({
             next(value2) {
               subscriber.next(value2)
+              if (isComplete) {
+                subscriber.complete()
+              }
             },
             error(err) {
               subscriber.error(err)
@@ -23,16 +24,17 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
             complete() {
               subscriber.complete()
             }
-          })
+          }))
         },
         error(err?: Error) {
           subscriber.error(err);
         },
         complete() {
-          subscriber.complete();
+          isComplete = true
         }
       }
-      return source.subscribe(obs);
+      source.subscribe(obs)
+      return sub
     })
   }
 }
