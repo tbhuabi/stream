@@ -1,4 +1,5 @@
 export * from './audit-time';
+export * from './buffer-time';
 export * from './concat';
 export * from './debounce-time';
 export * from './delay';
