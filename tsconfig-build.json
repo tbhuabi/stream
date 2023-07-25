@@ -2,19 +2,21 @@
   "compilerOptions": {
     "declaration": true,
     "target": "es6",
-    "module": "es6",
+    "module": "es2020",
     "moduleResolution": "node",
-    "sourceMap": false,
+    "sourceMap": true,
     "lib": [
       "es2018",
       "dom"
     ],
+    "strict": true,
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
+    "useDefineForClassFields": true,
     "baseUrl": "./",
-    "outDir": "package/bundles/esm",
+    "outDir": "bundles/",
     "paths": {
       "@tanbo/stream": [
         "src/public-api.ts"
@@ -24,7 +26,10 @@
       ]
     }
   },
-  "include": [
-    "src/public-api.ts"
-  ]
+  "include": ["src"],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
 }

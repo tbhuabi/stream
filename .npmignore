@@ -1,0 +1,13 @@
+./coverage
+./node_modules
+./src
+./test
+.gitignore
+.npmignore
+index.html
+index.ts
+jest.config.js
+package-lock.json
+rollup.config.ts
+tsconfig.json
+webpack.config.js
