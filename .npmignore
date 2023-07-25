@@ -1,7 +1,7 @@
-./coverage
-./node_modules
-./src
-./test
+coverage
+node_modules
+src
+test
 .gitignore
 .npmignore
 index.html
@@ -10,4 +10,5 @@ jest.config.js
 package-lock.json
 rollup.config.ts
 tsconfig.json
+tsconfig-build.json
 webpack.config.js
