@@ -7,11 +7,14 @@ import { Observable, Operator, PartialObserver, Subscription } from '../core/_ap
 export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T, U> {
   return function (source: Observable<T>) {
     return new Observable<U>(subscriber => {
-      const sub = new Subscription()
       let isComplete = false
+      let sub: Subscription | null = null
       const obs: PartialObserver<T> = {
         next(value: T) {
-          sub.add(handle(value).subscribe({
+          if (sub) {
+            sub.unsubscribe()
+          }
+          sub = handle(value).subscribe({
             next(value2) {
               subscriber.next(value2)
               if (isComplete) {
@@ -20,11 +23,8 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
             },
             error(err) {
               subscriber.error(err)
-            },
-            complete() {
-              subscriber.complete()
             }
-          }))
+          })
         },
         error(err?: Error) {
           subscriber.error(err);
@@ -33,8 +33,7 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
           isComplete = true
         }
       }
-      source.subscribe(obs)
-      return sub
+      return source.subscribe(obs)
     })
   }
 }
