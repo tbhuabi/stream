@@ -14,7 +14,7 @@ export function fromEvent<T extends Event>(source: Element | Window | Document, 
 
     source.addEventListener(type, listenFn, capture);
     return function () {
-      source.removeEventListener(type, listenFn)
+      source.removeEventListener(type, listenFn, capture)
     }
   })
 }
