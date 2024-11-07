@@ -8,6 +8,7 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
   return function (source: Observable<T>) {
     return new Observable<U>(subscriber => {
       let isComplete = false
+      let nextCompleted = false
       let sub: Subscription | null = null
       const obs: PartialObserver<T> = {
         next(value: T) {
@@ -23,6 +24,9 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
             },
             error(err) {
               subscriber.error(err)
+            },
+            complete() {
+              nextCompleted = true
             }
           })
         },
@@ -31,6 +35,9 @@ export function switchMap<T, U>(handle: (value: T) => Observable<U>): Operator<T
         },
         complete() {
           isComplete = true
+          if (nextCompleted) {
+            subscriber.complete()
+          }
         }
       }
       return source.subscribe(obs)
