@@ -1,6 +1,6 @@
 {
   "name": "@tanbo/stream",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "A data stream lib",
   "main": "./bundles/index.js",
   "module": "./bundles/index.esm.js",
