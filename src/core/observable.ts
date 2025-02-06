@@ -82,6 +82,9 @@ export class Observable<T> {
         next: observer
       })
     }
+    if (observer instanceof Subscriber) {
+      return observer
+    }
     return new Subscriber<T>(observer);
   }
 
